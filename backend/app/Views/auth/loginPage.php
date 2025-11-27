@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Achlys' Bookstore – Login</title>
+    <title>Fennekin Folios – Login</title>
     <link rel="shortcut icon" type="image/png" href="/assets/bookstore_icon.ico" />
     <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto+Slab:wght@100..900&display=swap"
@@ -25,7 +26,6 @@
         .heading {
             font-family: "Righteous", sans-serif;
             font-weight: 400;
-            font-style: normal;
         }
 
         input:focus {
@@ -37,22 +37,25 @@
             transition: all 0.3s ease;
         }
 
+        /* ORANGE SHADOW */
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 126, 116, 0.3);
+            box-shadow: 0 4px 12px rgba(225, 90, 55, 0.35);
         }
 
+        /* NEW BACKGROUND IMAGE */
         .bookstore-gradient {
             position: relative;
-            background: url('https://static.vecteezy.com/system/resources/previews/022/336/538/non_2x/coffee-and-book-minimalist-background-illustration-ai-generative-free-photo.jpg') no-repeat center center;
+            background: url('/assets/background.png') no-repeat center center;
             background-size: cover;
         }
 
+        /* FENNEKIN ORANGE OVERLAY */
         .bookstore-gradient::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(44, 41, 41, 0.85), rgba(139, 126, 116, 0.6));
+            background: linear-gradient(135deg, rgba(44, 41, 41, 0.85), rgba(225, 90, 55, 0.55));
             z-index: 0;
         }
 
@@ -61,39 +64,41 @@
             z-index: 1;
         }
 
+        /* INPUT FOCUS RING (CREAM YELLOW) */
         .focus-ring:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(139, 126, 116, 0.4);
+            box-shadow: 0 0 0 3px rgba(252, 231, 124, 0.6);
         }
 
+        /* PRIMARY ORANGE BUTTON */
         .btn-primary {
-            background-color: #8B7E74;
+            background-color: #e15a37;
             color: #fff;
         }
 
         .btn-primary:hover {
-            background-color: #A99D92;
+            background-color: #ed865a;
         }
 
+        /* LINKS — ORANGE WITH LIGHT HOVER */
         .link {
-            color: #8B7E74;
+            color: #e15a37;
         }
 
         .link:hover {
-            color: #A99D92;
+            color: #ed865a;
         }
     </style>
 </head>
 
 <body class="flex flex-col min-h-screen text-gray-100">
 
-    <!-- Main Content -->
     <main class="flex md:flex-row flex-col flex-grow">
 
         <!-- Left Section -->
         <div class="flex flex-col justify-center items-center p-12 md:w-2/3 text-white bookstore-gradient">
             <div class="space-y-6 max-w-md text-center">
-                <h2 class="font-bold text-4xl md:text-5xl header-title">Welcome to Achlys' Bookstore</h2>
+                <h2 class="font-bold text-4xl md:text-5xl header-title">Welcome to Fennekin Folios</h2>
                 <p class="text-white/90 text-lg leading-relaxed">
                     From rare collections to modern favorites, your next great story awaits.
                     Join our community of passionate readers and explore the world through books.
@@ -107,9 +112,9 @@
 
                 <!-- Header -->
                 <div class="mb-8 text-center">
-                    <img src="/assets/circle_logo.png" alt="Achlys Circle Logo" class="mx-auto mb-4 w-16 h-16">
-                    <h2 class="font-bold text-gray-900 text-3xl header-title">Welcome Back</h2>
-                    <p class="mt-2 text-gray-600">Log in to continue your reading journey</p>
+                    <img src="/assets/fennekin.png" alt="Fennekin Logo" class="mx-auto mb-4 w-16 h-16">
+                    <h2 class="font-bold text-[#514d4d] text-3xl header-title">Welcome Back</h2>
+                    <p class="mt-2 text-[#514d4d]/80">Log in to continue your reading journey</p>
                 </div>
 
                 <!-- Login Form -->
@@ -118,11 +123,11 @@
 
                     <!-- Email -->
                     <div>
-                        <label for="email" class="block mb-2 font-semibold text-gray-700">Email Address</label>
+                        <label for="email" class="block mb-2 font-semibold text-[#514d4d]">Email Address</label>
                         <input type="email" name="email" id="email" required
                             value="<?= esc($old['email'] ?? '') ?>"
                             placeholder="Enter your email"
-                            class="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus-ring text-gray-900 <?= isset($errors['email']) ? 'border-red-500' : 'border-gray-200' ?>">
+                            class="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus-ring text-gray-900 focus:ring-[#fce77c]/60 focus:ring-4 <?= isset($errors['email']) ? 'border-red-500' : 'border-gray-300' ?>">
                         <?php if (!empty($errors['email'])): ?>
                             <p class="mt-1 text-red-600 text-sm"><?= esc($errors['email']) ?></p>
                         <?php endif; ?>
@@ -130,14 +135,14 @@
 
                     <!-- Password -->
                     <div class="relative">
-                        <label for="password" class="block mb-2 font-semibold text-gray-700">Password</label>
+                        <label for="password" class="block mb-2 font-semibold text-[#514d4d]">Password</label>
 
                         <div class="relative">
                             <input type="password" name="password" id="password" required
                                 placeholder="Enter your password"
-                                class="w-full pr-10 px-4 py-3 border-2 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus-ring text-base <?= isset($errors['password']) ? 'border-red-500' : 'border-gray-200' ?>">
+                                class="w-full pr-10 px-4 py-3 border-2 rounded-xl text-gray-900 text-base focus:outline-none focus:ring-[#fce77c]/60 focus:ring-4 <?= isset($errors['password']) ? 'border-red-500' : 'border-gray-300' ?>">
 
-                            <!-- Eye toggle button -->
+                            <!-- Eye toggle -->
                             <button type="button" id="togglePasswordBtn"
                                 class="right-3 absolute inset-y-0 flex items-center text-gray-500">
                                 <svg id="icon-eye" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
@@ -159,20 +164,19 @@
                         <?php endif; ?>
                     </div>
 
-
                     <!-- Submit -->
                     <button type="submit"
-                        class="py-3 rounded-full focus:outline-none focus:ring-[#8B7E74]/50 focus:ring-4 w-full font-semibold text-lg btn-primary">
+                        class="py-3 rounded-full focus:outline-none w-full font-semibold text-lg btn-primary">
                         Log In
                     </button>
 
-                    <!-- Sign Up Link -->
-                    <p class="mt-4 text-gray-700 text-sm text-center">
+                    <!-- Sign Up -->
+                    <p class="mt-4 text-[#514d4d] text-sm text-center">
                         Don’t have an account?
-                        <a href="/signupPage" class="font-semibold transition-colors link">Create one now</a>
+                        <a href="/signupPage" class="font-semibold link">Create one now</a>
                     </p>
 
-                    <!-- Back to Home Button -->
+                    <!-- Back to Home -->
                     <?= view('components/buttons/back_button', [
                         'href' => '/',
                         'label' => 'Back to Home'
