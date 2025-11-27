@@ -32,28 +32,37 @@
             transition: all 0.3s ease;
         }
 
+        /* ORANGE SHADOW */
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 126, 116, 0.3);
+            box-shadow: 0 4px 12px rgba(225, 90, 55, 0.35);
         }
 
+        /* NEW BACKGROUND IMAGE */
         .bookstore-gradient {
             position: relative;
-            background: url('https://static.vecteezy.com/system/resources/previews/022/336/538/non_2x/coffee-and-book-minimalist-background-illustration-ai-generative-free-photo.jpg') no-repeat center center;
+            background: url('/assets/background.png') no-repeat center center;
             background-size: cover;
         }
 
+        /* ORANGE OVERLAY */
         .bookstore-gradient::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(44, 41, 41, 0.85), rgba(139, 126, 116, 0.6));
+            background: linear-gradient(135deg, rgba(44, 41, 41, 0.85), rgba(225, 90, 55, 0.55));
             z-index: 0;
         }
 
         .bookstore-gradient>div {
             position: relative;
             z-index: 1;
+        }
+
+        /* FOCUS RING — CREAM YELLOW */
+        .focus-ring:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(252, 231, 124, 0.6);
         }
     </style>
 </head>
@@ -63,26 +72,26 @@
 
         <main class="flex md:flex-row flex-col flex-grow">
 
-            <!-- LEFT SECTION -->
-            <div class="flex flex-col justify-center items-center p-12 md:w-2/3 text-white bookstore-gradient">
+            <!-- LEFT SECTION (FIXED, NON-SCROLLABLE) -->
+            <div class="flex flex-col justify-center items-center p-12 md:w-2/3 h-screen overflow-hidden text-white bookstore-gradient">
                 <div class="space-y-6 max-w-md text-center">
-                    <h2 class="font-bold text-4xl md:text-5xl header-title">Join the Achlys Community</h2>
+                    <h2 class="font-bold text-4xl md:text-5xl header-title">Join the Fennekin Community</h2>
                     <p class="text-white/90 text-lg">
                         Unlock a world of stories, connect with fellow readers, and keep track of your literary adventures.
                     </p>
                 </div>
             </div>
 
-            <!-- RIGHT SECTION (FORM) -->
-            <div class="flex justify-center items-center bg-white px-6 py-16 md:w-1/3">
+            <!-- RIGHT SECTION (SCROLLABLE ONLY) -->
+            <div class="flex justify-center items-start bg-white px-6 py-16 md:w-1/3 h-screen overflow-y-auto">
 
                 <div class="bg-white bg-opacity-90 shadow-2xl p-10 rounded-2xl w-full max-w-md">
 
                     <!-- Header -->
                     <div class="mb-8 text-center">
-                        <img src="/assets/circle_logo.png" alt="Achlys Circle Logo" class="mx-auto mb-4 w-16 h-16">
-                        <h2 class="font-bold text-gray-900 text-3xl header-title">Create Account</h2>
-                        <p class="mt-2 text-gray-600">Discover stories that speak to you</p>
+                        <img src="/assets/fennekin.png" alt="Achlys Circle Logo" class="mx-auto mb-4 w-16 h-16">
+                        <h2 class="font-bold text-[#514d4d] text-3xl header-title">Create Account</h2>
+                        <p class="mt-2 text-[#514d4d]">Discover stories that speak to you</p>
                     </div>
 
                     <!-- SIGNUP FORM -->
@@ -91,12 +100,11 @@
 
                         <!-- FIRST NAME -->
                         <div>
-                            <label class="block mb-2 font-semibold text-gray-700">First Name</label>
+                            <label class="block mb-2 font-semibold text-[#514d4d]">First Name</label>
                             <input type="text" name="first_name" required
                                 value="<?= esc($old['first_name'] ?? '') ?>"
                                 placeholder="Enter your first name"
-                                class="px-4 py-4 border-2 <?= isset($errors['first_name']) ? 'border-red-500' : 'border-gray-200' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#8B7E74]/20"
-                                aria-invalid="<?= isset($errors['first_name']) ? 'true' : 'false' ?>">
+                                class="px-4 py-4 border-2 <?= isset($errors['first_name']) ? 'border-red-500' : 'border-gray-300' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#fce77c]/60 focus:ring-4">
                             <?php if (!empty($errors['first_name'])): ?>
                                 <p class="mt-2 text-red-600 text-sm"><?= esc($errors['first_name']) ?></p>
                             <?php endif; ?>
@@ -104,12 +112,11 @@
 
                         <!-- MIDDLE NAME -->
                         <div>
-                            <label class="block mb-2 font-semibold text-gray-700">Middle Name (Optional)</label>
+                            <label class="block mb-2 font-semibold text-[#514d4d]">Middle Name (Optional)</label>
                             <input type="text" name="middle_name"
                                 value="<?= esc($old['middle_name'] ?? '') ?>"
                                 placeholder="Enter your middle name"
-                                class="px-4 py-4 border-2 <?= isset($errors['middle_name']) ? 'border-red-500' : 'border-gray-200' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#8B7E74]/20"
-                                aria-invalid="<?= isset($errors['middle_name']) ? 'true' : 'false' ?>">
+                                class="px-4 py-4 border-2 <?= isset($errors['middle_name']) ? 'border-red-500' : 'border-gray-300' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#fce77c]/60 focus:ring-4">
                             <?php if (!empty($errors['middle_name'])): ?>
                                 <p class="mt-2 text-red-600 text-sm"><?= esc($errors['middle_name']) ?></p>
                             <?php endif; ?>
@@ -117,12 +124,11 @@
 
                         <!-- LAST NAME -->
                         <div>
-                            <label class="block mb-2 font-semibold text-gray-700">Last Name</label>
+                            <label class="block mb-2 font-semibold text-[#514d4d]">Last Name</label>
                             <input type="text" name="last_name" required
                                 value="<?= esc($old['last_name'] ?? '') ?>"
                                 placeholder="Enter your last name"
-                                class="px-4 py-4 border-2 <?= isset($errors['last_name']) ? 'border-red-500' : 'border-gray-200' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#8B7E74]/20"
-                                aria-invalid="<?= isset($errors['last_name']) ? 'true' : 'false' ?>">
+                                class="px-4 py-4 border-2 <?= isset($errors['last_name']) ? 'border-red-500' : 'border-gray-300' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#fce77c]/60 focus:ring-4">
                             <?php if (!empty($errors['last_name'])): ?>
                                 <p class="mt-2 text-red-600 text-sm"><?= esc($errors['last_name']) ?></p>
                             <?php endif; ?>
@@ -130,12 +136,11 @@
 
                         <!-- EMAIL -->
                         <div>
-                            <label class="block mb-2 font-semibold text-gray-700">Email Address</label>
+                            <label class="block mb-2 font-semibold text-[#514d4d]">Email Address</label>
                             <input type="email" name="email" required
                                 value="<?= esc($old['email'] ?? '') ?>"
                                 placeholder="Enter your email"
-                                class="px-4 py-4 border-2 <?= isset($errors['email']) ? 'border-red-500' : 'border-gray-200' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#8B7E74]/20"
-                                aria-invalid="<?= isset($errors['email']) ? 'true' : 'false' ?>">
+                                class="px-4 py-4 border-2 <?= isset($errors['email']) ? 'border-red-500' : 'border-gray-300' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#fce77c]/60 focus:ring-4">
                             <?php if (!empty($errors['email'])): ?>
                                 <p class="mt-2 text-red-600 text-sm"><?= esc($errors['email']) ?></p>
                             <?php endif; ?>
@@ -143,13 +148,12 @@
 
                         <!-- PASSWORD -->
                         <div>
-                            <label class="block mb-2 font-semibold text-gray-700">Password</label>
+                            <label class="block mb-2 font-semibold text-[#514d4d]">Password</label>
 
                             <div class="relative">
                                 <input type="password" id="password" name="password" required
                                     placeholder="Create a password"
-                                    class="px-4 py-4 border-2 <?= isset($errors['password']) ? 'border-red-500' : 'border-gray-200' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#8B7E74]/20"
-                                    aria-invalid="<?= isset($errors['password']) ? 'true' : 'false' ?>">
+                                    class="px-4 py-4 border-2 <?= isset($errors['password']) ? 'border-red-500' : 'border-gray-300' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#fce77c]/60 focus:ring-4">
 
                                 <button type="button" aria-label="Toggle password visibility"
                                     id="togglePasswordBtn"
@@ -174,12 +178,12 @@
                             <?php endif; ?>
 
                             <!-- Password Requirements -->
-                            <div id="password-requirements" class="space-y-1 mt-2 text-gray-700 text-sm">
+                            <div id="password-requirements" class="space-y-1 mt-2 text-[#514d4d] text-sm">
                                 <p id="req-length" class="text-red-500">• At least 8 characters</p>
                                 <p id="req-number" class="text-red-500">• Contains a number</p>
                                 <p id="req-upper" class="text-red-500">• Contains an uppercase letter</p>
                                 <p id="req-lower" class="text-red-500">• Contains a lowercase letter</p>
-                                <p id="req-special" class="text-red-500">• Contains a special character (!@#$%^&*)</p>
+                                <p id="req-special" class="text-red-500">• Contains a special character</p>
                             </div>
 
                             <!-- Strength Meter -->
@@ -187,19 +191,18 @@
                                 <div class="bg-gray-200 rounded-full w-full h-2 overflow-hidden">
                                     <div id="strengthBar" class="bg-red-500 w-0 h-full transition-all"></div>
                                 </div>
-                                <p id="strengthText" class="mt-1 text-gray-600 text-xs">Strength: —</p>
+                                <p id="strengthText" class="mt-1 text-[#514d4d] text-xs">Strength: —</p>
                             </div>
                         </div>
 
                         <!-- CONFIRM PASSWORD -->
                         <div>
-                            <label class="block mb-2 font-semibold text-gray-700">Confirm Password</label>
+                            <label class="block mb-2 font-semibold text-[#514d4d]">Confirm Password</label>
 
                             <div class="relative">
                                 <input type="password" id="password_confirm" name="password_confirm" required
                                     placeholder="Confirm your password"
-                                    class="px-4 py-4 border-2 <?= isset($errors['password_confirm']) ? 'border-red-500' : 'border-gray-200' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#8B7E74]/20"
-                                    aria-invalid="<?= isset($errors['password_confirm']) ? 'true' : 'false' ?>">
+                                    class="px-4 py-4 border-2 <?= isset($errors['password_confirm']) ? 'border-red-500' : 'border-gray-300' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#fce77c]/60 focus:ring-4">
 
                                 <button type="button" id="toggleConfirmBtn" class="top-4 right-4 absolute p-1">
                                     <svg id="icon-eye2" xmlns="http://www.w3.org/2000/svg"
@@ -221,22 +224,21 @@
                                 <p class="mt-2 text-red-600 text-sm"><?= esc($errors['password_confirm']) ?></p>
                             <?php endif; ?>
 
-                            <!-- Match Indicator -->
                             <p id="matchText" class="mt-2 text-red-500 text-sm">• Passwords must match</p>
                         </div>
 
-                        <!-- SUBMIT -->
+                        <!-- SUBMIT BUTTON -->
                         <button type="submit"
-                            class="bg-[#8B7E74] hover:bg-[#A99D92] py-4 rounded-full w-full font-semibold text-white text-lg">
+                            class="bg-[#e15a37] hover:bg-[#ed865a] py-4 rounded-full w-full font-semibold text-white text-lg">
                             Create Account
                         </button>
                     </form>
 
                     <!-- LINKS -->
                     <div class="space-y-2 mt-6 text-center">
-                        <p class="text-gray-700">
+                        <p class="text-[#514d4d]">
                             Already have an account?
-                            <a href="/loginPage" class="font-semibold text-[#8B7E74] hover:text-[#A99D92]">
+                            <a href="/loginPage" class="font-semibold text-[#e15a37] hover:text-[#ed865a]">
                                 Log in here
                             </a>
                         </p>
@@ -254,7 +256,7 @@
     </div>
 
     <script>
-        // Eye toggle (main password)
+        // Eye toggle (password)
         document.getElementById("togglePasswordBtn").addEventListener("click", function() {
             const input = document.getElementById("password");
             const eye = document.getElementById("icon-eye");
@@ -266,7 +268,7 @@
             eyeOff.classList.toggle("hidden");
         });
 
-        // Eye toggle (confirm password)
+        // Eye toggle (confirm)
         document.getElementById("toggleConfirmBtn").addEventListener("click", function() {
             const input = document.getElementById("password_confirm");
             const eye = document.getElementById("icon-eye2");
@@ -303,6 +305,7 @@
                 special: /[^A-Za-z0-9]/.test(val),
             };
 
+            // Update requirement colors
             for (const key in tests) {
                 if (tests[key]) {
                     reqs[key].classList.remove("text-red-500");
