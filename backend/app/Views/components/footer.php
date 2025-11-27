@@ -1,9 +1,9 @@
-<footer class="w-full bg-[#8B7E74] text-gray-100 text-center py-6">
+<footer class="bg-[#e15a37] py-6 w-full text-white text-center">
     <p class="text-lg">
         &copy; <script>
             document.write(new Date().getFullYear())
         </script>
-        Achlys' Bookstore. All rights reserved.
+        Fennekin Folios. All rights reserved.
     </p>
-    <p class="mt-2 text-gray-200 text-sm">A haven for book lovers</p>
+    <p class="mt-2 text-[#fce77c] text-sm">A haven for book lovers</p>
 </footer>
