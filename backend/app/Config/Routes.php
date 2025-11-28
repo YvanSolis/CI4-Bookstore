@@ -21,6 +21,6 @@ $routes->get('/shop', 'Users::shop');
 
 // Admin dashboard
 $routes->get('/admin/adminDashboard', 'Admin::showDashboard');
-$routes->get('/admin/stockPage', 'Admin::stock');
-$routes->get('/admin/requestPage', 'Admin::request');
-$routes->get('/admin/accountsPage', 'Admin::accounts');
+$routes->get('/admin/stockPage', 'Admin::stockPage');
+$routes->get('/admin/requestPage', 'Admin::requestPage');
+$routes->get('/admin/accountsPage', 'Admin::accountsPage');
