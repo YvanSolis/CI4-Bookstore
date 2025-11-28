@@ -93,8 +93,13 @@ class Admin extends BaseController
         $user = $session->get('user') ?? [];
         $firstName = $user['first_name'] ?? 'Admin';
 
+        // Load real accounts from database
+        $usersModel = new UsersModel();
+        $accounts = $usersModel->findAll();
+
         return view('admin/accountsPage', [
-            'adminFirstName' => $firstName
+            'adminFirstName' => $firstName,
+            'accounts' => $accounts
         ]);
     }
 }
