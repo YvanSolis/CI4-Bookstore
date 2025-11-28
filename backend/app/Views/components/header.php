@@ -1,12 +1,15 @@
 <?php
 $session = \Config\Services::session();
+
+// Determine home URL dynamically
+$homeUrl = $session->has('user') ? '/shop' : '/';
 ?>
 <header class="top-0 z-50 sticky bg-[#e15a37] shadow-lg text-white">
     <div class="flex justify-between items-center mx-auto px-4 py-6 max-w-7xl">
 
         <!-- Brand -->
         <div class="flex items-center space-x-3">
-            <img src="<?= esc($logo ?? '/assets/circle_logo.png') ?>"
+            <img src="<?= esc($logo ?? '/assets/fenecircle_logo.png') ?>"
                 alt="<?= esc($brandTitle ?? 'Fennekin Folios') ?>"
                 class="w-10 md:w-12 h-10 md:h-12">
 
@@ -24,7 +27,7 @@ $session = \Config\Services::session();
 
         <!-- Desktop Nav -->
         <nav class="hidden md:flex items-center space-x-6">
-            <a href="/"
+            <a href="<?= esc($homeUrl) ?>"
                 class="bg-[#fce77c] hover:bg-[#ed865a] shadow-lg px-6 py-3 rounded-full text-[#514d4d] btn-main">
                 Home
             </a>
@@ -60,12 +63,12 @@ $session = \Config\Services::session();
 
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="hidden md:hidden bg-[#e15a37]">
-        <a href="/" class="block hover:bg-[#fce77c]/20 px-6 py-3 text-white">Home</a>
+        <a href="<?= esc($homeUrl) ?>" class="block hover:bg-[#fce77c]/20 px-6 py-3 text-white">Home</a>
         <a href="/moodboardPage" class="block hover:bg-[#fce77c]/20 px-6 py-3 text-white">Moodboard</a>
         <a href="/roadmapPage" class="block hover:bg-[#fce77c]/20 px-6 py-3 text-white">Roadmap</a>
 
         <?php if (!$session->has('user')): ?>
-            <a href="/login"
+            <a href="/loginPage"
                 class="inline-block bg-white hover:opacity-80 shadow-lg px-6 py-3 rounded-full text-[#514d4d]">
                 Login
             </a>

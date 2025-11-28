@@ -16,4 +16,11 @@ $routes->post('/loginPage', 'Auth::login');
 $routes->post('/signupPage', 'Auth::signup');
 $routes->post('/logout', 'Auth::logout');
 
+// **Shop page route — only accessible for logged-in users**
+$routes->get('/shop', 'Users::shop');
+
+// Admin dashboard
 $routes->get('/admin/adminDashboard', 'Admin::showDashboard');
+$routes->get('/admin/stockPage', 'Admin::stock');
+$routes->get('/admin/requestPage', 'Admin::request');
+$routes->get('/admin/accountsPage', 'Admin::accounts');
