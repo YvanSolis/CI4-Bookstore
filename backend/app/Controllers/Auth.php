@@ -50,13 +50,13 @@ class Auth extends BaseController
 
         $type = strtolower($user->type ?? 'client');
 
-        // Set session first (use `id` as primary key)
+        // Set session
         $session->set('user', [
-            'id'         => $user->id,
-            'email'      => $user->email,
+            'id' => $user->id,
+            'email' => $user->email,
             'first_name' => $user->first_name,
-            'last_name'  => $user->last_name,
-            'type'       => $type,
+            'last_name' => $user->last_name,
+            'type' => $type,
         ]);
 
         // Redirect based on type
@@ -64,7 +64,7 @@ class Auth extends BaseController
             return redirect()->to('/admin/adminDashboard');
         }
 
-        return redirect()->to('/');
+        return redirect()->to('/shop'); // <-- redirect client users to shop
     }
 
     public function logout()
@@ -72,14 +72,14 @@ class Auth extends BaseController
         $session = session();
         $session->destroy();
 
-        return redirect()->to('/'); // redirect to landing page
+        return redirect()->to('/loginPage'); // redirect to login
     }
 
     public function showSignup()
     {
         $session = session();
         if ($session->has('user')) {
-            return redirect()->to('/');
+            return redirect()->to('/shop'); // already logged in
         }
 
         $errors = $session->getFlashdata('errors') ?? [];
@@ -118,16 +118,17 @@ class Auth extends BaseController
         }
 
         $data = [
-            'first_name'     => $post['first_name'],
-            'middle_name'    => $post['middle_name'],
-            'last_name'      => $post['last_name'],
-            'email'          => $post['email'],
-            'password_hash'  => password_hash($post['password'], PASSWORD_DEFAULT),
-            'type'           => 'client',
+            'first_name'    => $post['first_name'],
+            'middle_name'   => $post['middle_name'],
+            'last_name'     => $post['last_name'],
+            'email'         => $post['email'],
+            'password_hash' => password_hash($post['password'], PASSWORD_DEFAULT),
+            'type'          => 'client',
             'account_status' => 1,
         ];
 
         $inserted = $userModel->insert($data);
+
         if ($inserted === false) {
             $session->setFlashdata('errors', ['general' => 'Could not create account']);
             $session->setFlashdata('old', $post);
@@ -137,14 +138,14 @@ class Auth extends BaseController
         $newUser = $userModel->find($inserted);
 
         $session->set('user', [
-            'id'         => $newUser->id ?? null,
-            'email'      => $newUser->email ?? null,
-            'first_name' => $newUser->first_name ?? null,
-            'last_name'  => $newUser->last_name ?? null,
-            'type'       => $newUser->type ?? 'client',
+            'id' => $newUser->id,
+            'email' => $newUser->email,
+            'first_name' => $newUser->first_name,
+            'last_name' => $newUser->last_name,
+            'type' => $newUser->type,
         ]);
 
         $session->setFlashdata('success', 'Account created successfully!');
-        return redirect()->to('/');
+        return redirect()->to('/shop'); // <-- redirect new users to shop
     }
 }

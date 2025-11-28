@@ -85,7 +85,7 @@
                         Discover, purchase, and enjoy your favorite books in digital format—anytime, anywhere.
                     </p>
 
-                    <a href="#ebooks"
+                    <a href="/loginPage"
                         class="inline-block bg-[#fce77c] hover:bg-[#ed865a] shadow-xl px-10 py-5 rounded-full font-semibold text-[#514d4d] text-xl md:text-2xl">
                         Browse eBooks
                     </a>
@@ -102,22 +102,22 @@
 
                     <div class="gap-8 grid md:grid-cols-3">
                         <?= view('components/cards/product_cards', [
-                            "title" => "The Lord of the Rings",
-                            "description" => "by J.R.R. Tolkien — A story about Frodo Baggins’ quest to destroy a dark lord’s powerful ring and save Middle-earth.",
+                            "title" => "Tales of Japan: Traditional Stories of Monsters and Magic",
+                            "description" => "by Kotaro Chiba — A collection of 15 classic Japanese folktales filled with vengeful spirits, brave samurai, and eerie yokai, blending monsters and magic in atmospheric, illustrated stories.",
                             "price" => 199,
-                            "image" => "https://cdn.shopify.com/s/files/1/0070/1884/0133/t/8/assets/pf-8a8430b5--Books5.jpg?v=1620061376"
+                            "image" => "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1538457160i/41188320.jpg"
                         ]) ?>
                         <?= view('components/cards/product_cards', [
-                            "title" => "Harry Potter and the Sorcerer's Stone",
-                            "description" => "by J.K. Rowling — A story about young wizard Harry as he discovers his magical heritage, attends Hogwarts School, and faces dark forces.",
+                            "title" => "Japanese Yokai: Explore a Mythical World of Monsters, Demons and Magical Creatures",
+                            "description" => "by Fleur Daugey — An illustrated guide to over 30 Japanese yokai that explains how these mysterious monsters, demons, and magical creatures shape strange events and spooky legends in everyday life.",
                             "price" => 149,
-                            "image" => "https://cdn.shopify.com/s/files/1/0070/1884/0133/t/8/assets/pf-b57dac15--Books8_1200x.jpg?v=1620061403"
+                            "image" => "https://unsw-prod.s3.amazonaws.com/media/images/9784805318911_i0UR1OC.original.jpg"
                         ]) ?>
                         <?= view('components/cards/product_cards', [
-                            "title" => "The Origin of Species",
-                            "description" => "by Charles Darwin — Explains how species evolve over time through natural selection, laying the foundation for modern evolutionary biology.",
+                            "title" => "Supernatural Tales from Japan",
+                            "description" => "by Lafcadio Hearn & Yei Theodora Ozaki — A collection of eerie Japanese ghost stories and yokai legends where goblins, spirits, and magical beings haunt the border between the human and supernatural worlds.",
                             "price" => 179,
-                            "image" => "https://cdn.shopify.com/s/files/1/0070/1884/0133/t/8/assets/pf-71b40b91--Books_1200x.jpg?v=1620061288"
+                            "image" => "https://cdn11.bigcommerce.com/s-q39b4/images/stencil/2000x2000/products/9578/239719/9784805318539__58590.1709233075.jpg?c=2"
                         ]) ?>
                     </div>
 
@@ -178,7 +178,7 @@
                     <?= view('components/cta', [
                         'heading' => 'Discover Your Next Favorite Book',
                         'sub' => 'Browse our curated collection...',
-                        'primary' => ['label' => 'Shop Now', 'href' => '/shop'],
+                        'primary' => ['label' => 'Shop Now', 'href' => '/loginPage'],
                     ]) ?>
                 </div>
             </section>

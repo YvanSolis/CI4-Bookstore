@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
 
 class Users extends BaseController
 {
@@ -11,18 +10,34 @@ class Users extends BaseController
     {
         return view('user/landingPage');
     }
+
     public function login()
     {
         return view('user/loginPage');
     }
+
     public function signup()
     {
         return view('user/signupPage');
     }
+
+    public function shop()
+    {
+        $session = session();
+
+        // Redirect to login if not logged in
+        if (!$session->has('user')) {
+            return redirect()->to('/loginPage');
+        }
+
+        return view('user/shopPage'); // This is your shop page view
+    }
+
     public function moodboard()
     {
         return view('user/moodboardPage');
     }
+
     public function roadmap()
     {
         return view('user/roadmapPage');
