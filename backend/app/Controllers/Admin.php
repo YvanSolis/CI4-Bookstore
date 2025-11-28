@@ -55,4 +55,22 @@ class Admin extends BaseController
             'adminFirstName' => $firstName,
         ]);
     }
+
+    /**
+     * Stocks Page
+     */
+    public function stockPage()
+    {
+        $this->checkAdminAccess();
+        return view('admin/stockPage');
+    }
+
+    /**
+     * Requests Page
+     */
+    public function requestPage()
+    {
+        $this->checkAdminAccess();
+        return view('admin/requestPage');
+    }
 }
