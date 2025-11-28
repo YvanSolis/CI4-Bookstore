@@ -62,15 +62,26 @@ class Admin extends BaseController
     public function stockPage()
     {
         $this->checkAdminAccess();
-        return view('admin/stockPage');
+
+        $session = session();
+        $user = $session->get('user') ?? [];
+        $firstName = $user['first_name'] ?? 'Admin';
+
+        return view('admin/stockPage', [
+            'adminFirstName' => $firstName
+        ]);
     }
 
-    /**
-     * Requests Page
-     */
     public function requestPage()
     {
         $this->checkAdminAccess();
-        return view('admin/requestPage');
+
+        $session = session();
+        $user = $session->get('user') ?? [];
+        $firstName = $user['first_name'] ?? 'Admin';
+
+        return view('admin/requestPage', [
+            'adminFirstName' => $firstName
+        ]);
     }
 }
