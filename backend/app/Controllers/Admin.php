@@ -84,4 +84,17 @@ class Admin extends BaseController
             'adminFirstName' => $firstName
         ]);
     }
+
+    public function accountsPage()
+    {
+        $this->checkAdminAccess();
+
+        $session = session();
+        $user = $session->get('user') ?? [];
+        $firstName = $user['first_name'] ?? 'Admin';
+
+        return view('admin/accountsPage', [
+            'adminFirstName' => $firstName
+        ]);
+    }
 }
