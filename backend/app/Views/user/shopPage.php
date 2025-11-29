@@ -8,6 +8,9 @@ if (!$session->has('user')) {
 
 // Get user's first name
 $userFirstName = $session->get('user')['first_name'] ?? 'Reader';
+
+// Count items in cart
+$cartCount = $session->has('cart') ? count($session->get('cart')) : 0;
 ?>
 
 <!DOCTYPE html>
@@ -37,9 +40,16 @@ $userFirstName = $session->get('user')['first_name'] ?? 'Reader';
         }
 
         button:hover,
-        .card-hover:hover {
-            transform: translateY(-4px);
+        .card-hover:hover,
+        a:hover {
+            transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(225, 90, 55, 0.3);
+        }
+
+        /* Cart badge */
+        .cart-badge {
+            top: -0.5rem;
+            right: -0.5rem;
         }
     </style>
 </head>
@@ -47,7 +57,8 @@ $userFirstName = $session->get('user')['first_name'] ?? 'Reader';
 <body class="flex flex-col min-h-screen">
     <div class="flex flex-col min-h-screen overlay">
 
-        <?= view('components/header.php') ?>
+        <!-- Header -->
+        <?= view('components/header.php', ['showCart' => true, 'cartCount' => $cartCount]) ?>
 
         <main class="flex-grow">
 
@@ -77,11 +88,12 @@ $userFirstName = $session->get('user')['first_name'] ?? 'Reader';
                                     'title'       => $product->name,
                                     'description' => $product->description,
                                     'price'       => $product->price,
-                                    'image'       => $product->image
+                                    'image'       => $product->image,
+                                    'showCartBtn' => true
                                 ]) ?>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <p class="text-center text-gray-600 col-span-3">
+                            <p class="col-span-3 text-gray-600 text-center">
                                 No books available at the moment.
                             </p>
                         <?php endif; ?>
@@ -91,7 +103,7 @@ $userFirstName = $session->get('user')['first_name'] ?? 'Reader';
                 </div>
             </section>
 
-            <!-- CTA -->
+            <!-- CTA Full Width -->
             <section class="bg-white/90 backdrop-blur-sm py-32 w-full text-[#514d4d] text-center">
                 <?= view('components/cta', [
                     'heading' => 'Discover More Japanese Folktales',
@@ -102,6 +114,19 @@ $userFirstName = $session->get('user')['first_name'] ?? 'Reader';
                     ]
                 ]) ?>
             </section>
+
+            <!-- User Request Form -->
+            <div class="bg-white shadow-md mx-auto mt-16 mb-16 p-8 border border-[#FCE77C] rounded-xl max-w-3xl">
+                <h3 class="mb-4 font-bold text-[#E15A37] text-2xl header-title">Have a Book Request?</h3>
+                <p class="mb-4 text-gray-700">If there's a book you'd like us to add, you can submit your request below.</p>
+                <form action="/submitRequest" method="post">
+                    <?= csrf_field() ?>
+                    <textarea name="request_text" placeholder="Enter your request here..." class="mb-4 p-3 border border-[#E15A37] rounded-lg focus:outline-none focus:ring-[#E15A37]/50 focus:ring-2 w-full" rows="4"></textarea>
+                    <button type="submit" class="bg-[#E15A37] hover:bg-[#ED865A] px-6 py-3 rounded-lg font-semibold text-white">
+                        Submit Request
+                    </button>
+                </form>
+            </div>
 
             <!-- Footer -->
             <?= view('components/footer') ?>

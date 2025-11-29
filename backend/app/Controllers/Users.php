@@ -21,8 +21,6 @@ class Users extends BaseController
         return view('user/signupPage');
     }
 
-    // ❌ REMOVE shop() here — Stock controller now handles shop
-
     public function moodboard()
     {
         return view('user/moodboardPage');
@@ -31,5 +29,28 @@ class Users extends BaseController
     public function roadmap()
     {
         return view('user/roadmapPage');
+    }
+
+    public function cart()
+    {
+        $session = session();
+
+        // Redirect if user not logged in
+        if (!$session->has('user')) {
+            return redirect()->to('/loginPage');
+        }
+
+        $cartItems = $session->get('cart') ?? [];
+        $totalPrice = 0;
+
+        foreach ($cartItems as $item) {
+            $totalPrice += $item['price'] * $item['quantity'];
+        }
+
+        return view('user/cartPage', [
+            'cartItems' => $cartItems,
+            'totalPrice' => $totalPrice,
+            'userFirstName' => $session->get('user')['first_name'] ?? 'Reader'
+        ]);
     }
 }
