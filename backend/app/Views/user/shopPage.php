@@ -119,14 +119,42 @@ $cartCount = $session->has('cart') ? count($session->get('cart')) : 0;
             <div class="bg-white shadow-md mx-auto mt-16 mb-16 p-8 border border-[#FCE77C] rounded-xl max-w-3xl">
                 <h3 class="mb-4 font-bold text-[#E15A37] text-2xl header-title">Have a Book Request?</h3>
                 <p class="mb-4 text-gray-700">If there's a book you'd like us to add, you can submit your request below.</p>
+
+                <!-- SUCCESS MESSAGE -->
+                <?php if (session()->getFlashdata('success')): ?>
+                    <p class="mb-4 p-3 bg-green-100 text-green-700 border border-green-300 rounded-lg">
+                        <?= session()->getFlashdata('success') ?>
+                    </p>
+                <?php endif; ?>
+
+                <!-- ERROR MESSAGE -->
+                <?php if (session()->getFlashdata('error')): ?>
+                    <p class="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded-lg">
+                        <?= session()->getFlashdata('error') ?>
+                    </p>
+                <?php endif; ?>
+
                 <form action="/submitRequest" method="post">
                     <?= csrf_field() ?>
-                    <textarea name="request_text" placeholder="Enter your request here..." class="mb-4 p-3 border border-[#E15A37] rounded-lg focus:outline-none focus:ring-[#E15A37]/50 focus:ring-2 w-full" rows="4"></textarea>
-                    <button type="submit" class="bg-[#E15A37] hover:bg-[#ED865A] px-6 py-3 rounded-lg font-semibold text-white">
+
+                    <!-- Automatically include logged-in user's full name -->
+                    <input type="hidden" name="requester_name"
+                        value="<?= esc($session->get('user')['first_name'] . ' ' . $session->get('user')['last_name']) ?>">
+
+                    <textarea name="requested_data" placeholder="Enter the book or item you want added..."
+                        class="mb-4 p-3 border border-[#E15A37] rounded-lg w-full" rows="3" required></textarea>
+
+                    <textarea name="message" placeholder="Optional message..."
+                        class="mb-4 p-3 border border-[#E15A37] rounded-lg w-full" rows="3"></textarea>
+
+                    <button type="submit"
+                        class="bg-[#E15A37] hover:bg-[#ED865A] px-6 py-3 rounded-lg font-semibold text-white">
                         Submit Request
                     </button>
                 </form>
+
             </div>
+
 
             <!-- Footer -->
             <?= view('components/footer') ?>
