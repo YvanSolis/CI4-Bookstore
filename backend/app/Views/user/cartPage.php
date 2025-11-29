@@ -47,8 +47,10 @@ foreach ($cartItems as $item) {
 </head>
 
 <body class="flex flex-col min-h-screen">
+
     <div class="flex flex-col min-h-screen overlay">
 
+        <!-- Header -->
         <?= view('components/header.php') ?>
 
         <main class="flex-grow p-10">
@@ -105,6 +107,12 @@ foreach ($cartItems as $item) {
             </div>
 
         </main>
+
+        <!-- Footer always at bottom -->
+        <footer class="mt-auto">
+            <?= view('components/footer') ?>
+        </footer>
+
     </div>
 </body>
 
