@@ -21,17 +21,7 @@ class Users extends BaseController
         return view('user/signupPage');
     }
 
-    public function shop()
-    {
-        $session = session();
-
-        // Redirect to login if not logged in
-        if (!$session->has('user')) {
-            return redirect()->to('/loginPage');
-        }
-
-        return view('user/shopPage'); // This is your shop page view
-    }
+    // ❌ REMOVE shop() here — Stock controller now handles shop
 
     public function moodboard()
     {

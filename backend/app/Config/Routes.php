@@ -15,7 +15,9 @@ $routes->post('/signupPage', 'Auth::signup');
 $routes->post('/logout', 'Auth::logout');
 
 // Shop Page (Require Login)
-$routes->get('/shop', 'Users::shop');
+//$routes->get('/shop', 'Users::shop');
+$routes->get('/shop', 'Stock::shop');
+
 
 // Admin dashboard
 $routes->get('/admin/adminDashboard', 'Admin::showDashboard');
