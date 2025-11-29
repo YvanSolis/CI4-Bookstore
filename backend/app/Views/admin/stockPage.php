@@ -75,9 +75,11 @@ $currentPath = $uri->getPath();
 
             <div class="flex justify-between items-center mb-6">
                 <h2 class="font-bold text-[#E15A37] text-4xl header-title">📦 Stock List</h2>
-                <a href="/admin/stocks/add" class="hover:bg-[#ED865A] px-6 py-3 rounded-full font-semibold text-lg transition accent-yellow">
+                <button onclick="openAddBook()"
+                    class="hover:bg-[#ED865A] px-6 py-3 rounded-full font-semibold text-lg transition accent-yellow">
                     ➕ Add New Book
-                </a>
+                </button>
+
             </div>
 
             <div class="overflow-x-auto">
@@ -179,6 +181,60 @@ $currentPath = $uri->getPath();
             </form>
         </div>
     </aside>
+
+
+    <!-- ADD NEW BOOK MODAL -->
+    <dialog id="addBookModal" class="p-0 rounded-2xl w-[95%] max-w-lg backdrop:bg-black/60">
+        <form method="post" action="/admin/stocks/create"
+            class="bg-white p-6 rounded-2xl border border-[#FCE77C] shadow-xl space-y-4">
+
+            <?= csrf_field() ?>
+
+            <h3 class="text-3xl font-bold text-[#E15A37] header-title mb-4">Add New Book</h3>
+
+            <div class="grid grid-cols-1 gap-3">
+
+                <input type="text" name="name" placeholder="Book Title"
+                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+
+                <input type="text" name="image" placeholder="Image URL"
+                    class="border border-[#FCE77C] px-3 py-2 rounded-lg">
+
+                <textarea name="description" placeholder="Book Description" rows="4"
+                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required></textarea>
+
+                <input type="number" step="0.01" name="price" placeholder="Price"
+                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+
+                <input type="number" name="quantity" placeholder="Stock Quantity"
+                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" onclick="closeAddBook()"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                    class="px-6 py-2 bg-[#E15A37] text-white rounded-lg hover:bg-[#ED865A]">
+                    Add Book
+                </button>
+            </div>
+
+        </form>
+    </dialog>
+
+    <script>
+        function openAddBook() {
+            document.getElementById('addBookModal').showModal();
+        }
+
+        function closeAddBook() {
+            document.getElementById('addBookModal').close();
+        }
+    </script>
 
 </body>
 

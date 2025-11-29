@@ -29,3 +29,6 @@ $routes->get('/admin/accountsPage', 'Admin::accountsPage');
 $routes->post('/admin/accounts/create', 'UserCRUDtest\UserCreate::createAccount');
 $routes->post('/admin/accounts/update/(:num)', 'Admin::updateAccount/$1');
 $routes->post('/admin/accounts/delete/(:num)', 'UserCRUDtest\UserDelete::delete/$1');
+
+// Stocks Management
+$routes->post('/admin/stocks/create', 'StockCRUDtest\StockCreate::create');
