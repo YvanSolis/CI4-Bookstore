@@ -14,11 +14,12 @@ $routes->post('/loginPage', 'Auth::login');
 $routes->post('/signupPage', 'Auth::signup');
 $routes->post('/logout', 'Auth::logout');
 
-// Shop Page (Require Login)
-//$routes->get('/shop', 'Users::shop');
+// Shop Page
 $routes->get('/shop', 'Stock::shop');
-$routes->get('/cart', 'Users::cart');             // existing cart page
-$routes->get('/checkout', 'Users::checkout');     // new checkout page
+$routes->get('/cart', 'Users::cart');
+$routes->get('/checkout', 'Users::checkout');
+$routes->post('/submitRequest', 'Request::submit');
+
 
 // Admin dashboard
 $routes->get('/admin/adminDashboard', 'Admin::showDashboard');
