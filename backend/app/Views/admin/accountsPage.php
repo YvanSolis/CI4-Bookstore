@@ -128,11 +128,11 @@
                                     <a href="#" onclick='openEditModal(<?= json_encode($user) ?>)'
                                         class="mx-2 text-[#E15A37]">✏️ Edit</a>
 
-                                    <a href="/admin/accounts/delete/<?= esc($user->id) ?>"
-                                        class="mx-2 text-red-500"
-                                        onclick="return confirm('Are you sure you want to delete this account?')">
+                                    <a href="#" onclick='openDeleteModal(<?= json_encode($user) ?>)'
+                                        class="mx-2 font-semibold text-red-500 hover:text-red-600">
                                         🗑️ Delete
                                     </a>
+
                                 </td>
 
                             </tr>
@@ -239,6 +239,33 @@
         </form>
     </dialog>
 
+    <!-- DELETE CONFIRM MODAL -->
+    <dialog id="deleteUserModal" class="p-0 rounded-2xl w-[90%] max-w-md backdrop:bg-black/60">
+
+        <form method="post" id="deleteUserForm" class="bg-white p-6 rounded-2xl border border-[#FCE77C] shadow-xl">
+            <?= csrf_field() ?>
+
+            <h3 class="text-2xl font-bold text-[#E15A37] header-title mb-4">⚠️ Delete User</h3>
+
+            <p class="text-gray-700 mb-6">
+                Are you sure you want to delete
+                <strong id="delete_user_name"></strong>?
+                This action cannot be undone.
+            </p>
+
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">
+                    Cancel
+                </button>
+
+                <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    Delete
+                </button>
+            </div>
+        </form>
+
+    </dialog>
+
     <script>
         function openAddModal() {
             document.getElementById('addAccountModal').showModal();
@@ -264,6 +291,22 @@
 
         function closeEditModal() {
             editModal.close();
+        }
+
+        const deleteModal = document.getElementById("deleteUserModal");
+        const deleteForm = document.getElementById("deleteUserForm");
+
+        function openDeleteModal(user) {
+            document.getElementById("delete_user_name").textContent =
+                user.first_name + " " + user.last_name;
+
+            deleteForm.action = "/admin/accounts/delete/" + user.id;
+
+            deleteModal.showModal();
+        }
+
+        function closeDeleteModal() {
+            deleteModal.close();
         }
     </script>
 
