@@ -32,3 +32,4 @@ $routes->post('/admin/accounts/delete/(:num)', 'UserCRUDtest\UserDelete::delete/
 
 // Stocks Management
 $routes->post('/admin/stocks/create', 'StockCRUDtest\StockCreate::create');
+$routes->post('/admin/stocks/update/(:num)', 'StockCRUDtest\StockUpdate::update/$1');
