@@ -20,13 +20,11 @@
             font-weight: 400;
         }
 
-        /* Header */
         .dashboard-header {
             background-color: #E15A37;
             color: #fff;
         }
 
-        /* Sidebar */
         .sidebar {
             background-color: #E15A37;
             color: #fff;
@@ -41,13 +39,11 @@
             color: #fff;
         }
 
-        /* Cards hover */
         .card-hover:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 20px rgba(225, 90, 55, 0.3);
         }
 
-        /* Accent highlights */
         .accent-yellow {
             background-color: #FCE77C;
         }
@@ -67,90 +63,85 @@
         </header>
 
         <div class="bg-white shadow-xl mx-auto mt-6 p-8 border border-[#FCE77C] rounded-2xl max-w-7xl card-hover">
+
             <div class="flex justify-between items-center mb-8">
                 <h2 class="font-bold text-[#E15A37] text-4xl header-title">📚 Manage Requests</h2>
-                <a href="/admin/requests/add" class="hover:bg-[#ED865A] px-6 py-3 rounded-full font-semibold text-lg transition accent-yellow">➕ New Request</a>
             </div>
 
-            <!-- Filters -->
-            <div class="flex md:flex-row flex-col justify-between gap-4 mb-6">
-                <input type="text" placeholder="Search by requester or title..." class="px-4 py-2 border border-[#FCE77C] rounded-lg focus:outline-none focus:ring-[#E15A37]/50 focus:ring-2 w-full md:w-1/3" />
-
-                <select class="px-4 py-2 border border-[#FCE77C] rounded-lg focus:outline-none focus:ring-[#E15A37]/50 focus:ring-2 w-full md:w-1/5">
-                    <option>All Statuses</option>
-                    <option>Pending</option>
-                    <option>Approved</option>
-                    <option>Denied</option>
-                </select>
-            </div>
-
-            <!-- Requests Table -->
             <div class="overflow-x-auto">
                 <table class="bg-white border border-[#FCE77C] rounded-xl min-w-full overflow-hidden">
                     <thead class="bg-[#E15A37] text-white">
                         <tr>
-                            <th class="px-6 py-3 font-semibold text-sm text-left uppercase">Request ID</th>
-                            <th class="px-6 py-3 font-semibold text-sm text-left uppercase">Book Title</th>
+                            <th class="px-6 py-3 font-semibold text-sm text-left uppercase">ID</th>
+                            <th class="px-6 py-3 font-semibold text-sm text-left uppercase">Requested Book</th>
+                            <th class="px-6 py-3 font-semibold text-sm text-left uppercase">Message</th>
                             <th class="px-6 py-3 font-semibold text-sm text-left uppercase">Requester</th>
-                            <th class="px-6 py-3 font-semibold text-sm text-center uppercase">Date Requested</th>
+                            <th class="px-6 py-3 font-semibold text-sm text-left uppercase">Date</th>
                             <th class="px-6 py-3 font-semibold text-sm text-center uppercase">Status</th>
-                            <th class="px-6 py-3 font-semibold text-sm text-center uppercase">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-[#FCE77C]">
-                        <?php
-                        $requests = [
-                            ['id' => 'REQ-002', 'book' => 'Atomic Habits', 'requester' => 'Adrian Guillermo', 'date' => '2025-10-28', 'status' => 'Approved'],
-                        ];
-                        ?>
 
-                        <?php foreach ($requests as $req): ?>
-                            <tr class="hover:bg-[#FFF8E7] transition">
-                                <td class="px-6 py-4 text-gray-800"><?php echo esc($req['id']); ?></td>
-                                <td class="px-6 py-4 font-semibold text-gray-900"><?php echo esc($req['book']); ?></td>
-                                <td class="px-6 py-4 text-gray-700"><?php echo esc($req['requester']); ?></td>
-                                <td class="px-6 py-4 text-gray-700 text-center"><?php echo esc($req['date']); ?></td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="px-3 py-1 rounded-full text-sm font-semibold
-                                        <?php
-                                        if ($req['status'] === 'Approved') echo 'bg-green-100 text-green-700';
-                                        elseif ($req['status'] === 'Denied') echo 'bg-red-100 text-red-700';
-                                        else echo 'bg-yellow-100 text-yellow-700';
-                                        ?>">
-                                        <?php echo esc($req['status']); ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <?php if ($req['status'] === 'Pending'): ?>
-                                        <a href="/admin/requests/approve/<?php echo esc($req['id']); ?>" class="mx-2 font-semibold text-green-600 hover:text-green-700">✅ Approve</a>
-                                        <a href="/admin/requests/deny/<?php echo esc($req['id']); ?>" class="mx-2 font-semibold text-red-600 hover:text-red-700">❌ Deny</a>
-                                    <?php else: ?>
-                                        <a href="/admin/requests/view/<?php echo esc($req['id']); ?>" class="mx-2 font-semibold text-[#E15A37] hover:text-[#ED865A]">👁️ View</a>
-                                    <?php endif; ?>
+                    <tbody class="divide-y divide-[#FCE77C]">
+
+                        <?php if (!empty($requests)): ?>
+                            <?php foreach ($requests as $req): ?>
+                                <tr class="hover:bg-[#FFF8E7] transition">
+
+                                    <!-- ID -->
+                                    <td class="px-6 py-4 text-gray-800 whitespace-nowrap">
+                                        REQ-<?= esc($req->id) ?>
+                                    </td>
+
+                                    <!-- Requested Book -->
+                                    <td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap max-w-[250px] truncate">
+                                        <?= esc($req->requested_data) ?>
+                                    </td>
+
+                                    <!-- Message -->
+                                    <td class="px-6 py-4 text-gray-700 italic whitespace-nowrap max-w-[250px] truncate">
+                                        <?= esc($req->message ?: '—') ?>
+                                    </td>
+
+                                    <!-- Requester -->
+                                    <td class="px-6 py-4 text-gray-700 whitespace-nowrap">
+                                        <?= esc($req->requester_name) ?>
+                                    </td>
+
+                                    <!-- DATE Column -->
+                                    <td class="px-6 py-4 text-gray-700 whitespace-nowrap text-center">
+                                        <?= esc(date('Y-m-d', strtotime($req->created_at))) ?>
+                                    </td>
+
+                                    <!-- STATUS DROPDOWN -->
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        <form action="/admin/requests/updateStatus/<?= esc($req->id) ?>" method="post">
+                                            <?= csrf_field() ?>
+                                            <select name="status"
+                                                onchange="this.form.submit()"
+                                                class="px-3 py-2 border border-[#FCE77C] rounded-lg bg-white text-gray-700">
+                                                <option value="pending" <?= $req->status === 'pending'   ? 'selected' : '' ?>>Pending</option>
+                                                <option value="completed" <?= $req->status === 'completed' ? 'selected' : '' ?>>Completed</option>
+                                                <option value="rejected" <?= $req->status === 'rejected'  ? 'selected' : '' ?>>Rejected</option>
+                                            </select>
+                                        </form>
+                                    </td>
+
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6" class="text-center py-6 text-gray-600">
+                                    No requests found.
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php endif; ?>
+
                     </tbody>
+
                 </table>
             </div>
 
-            <!-- Summary Cards -->
-            <section class="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-10">
-                <div class="bg-white shadow-md p-6 border border-[#FCE77C] rounded-xl card-hover">
-                    <h3 class="mb-2 text-[#E15A37] text-xl header-title">🕒 Pending Requests</h3>
-                    <p class="font-bold text-gray-800 text-3xl">1</p>
-                </div>
 
-                <div class="bg-white shadow-md p-6 border border-[#FCE77C] rounded-xl card-hover">
-                    <h3 class="mb-2 text-[#E15A37] text-xl header-title">✅ Approved Requests</h3>
-                    <p class="font-bold text-gray-800 text-3xl">1</p>
-                </div>
-
-                <div class="bg-white shadow-md p-6 border border-[#FCE77C] rounded-xl card-hover">
-                    <h3 class="mb-2 text-[#E15A37] text-xl header-title">❌ Denied Requests</h3>
-                    <p class="font-bold text-gray-800 text-3xl">1</p>
-                </div>
-            </section>
         </div>
 
     </main>
@@ -180,5 +171,3 @@
     </aside>
 
 </body>
-
-</html>

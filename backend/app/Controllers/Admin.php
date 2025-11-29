@@ -4,46 +4,36 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UsersModel;
-use App\Models\StocksModel;   // ⭐ ADD THIS
+use App\Models\StocksModel;
+use App\Models\RequestsModel;
 use CodeIgniter\Exceptions\ForbiddenException;
 
 class Admin extends BaseController
 {
-    /**
-     * Enforce admin-only access
-     */
     private function checkAdminAccess()
     {
         $session = session();
 
         if (!$session->has('user')) {
-            throw ForbiddenException::forbidden('Authentication required. Please log in to access admin pages.');
+            throw ForbiddenException::forbidden('Authentication required.');
         }
 
         $user = $session->get('user');
 
         if (!isset($user['type']) || $user['type'] !== 'admin') {
-            throw ForbiddenException::forbidden('Access denied: Admin role required to access admin pages.');
+            throw ForbiddenException::forbidden('Access denied: Admin only.');
         }
     }
 
-    /**
-     * Display Admin Dashboard
-     */
     public function showDashboard()
     {
         $this->checkAdminAccess();
 
-        try {
-            $usersModel = new UsersModel();
-            $clientsCount = $usersModel->where('type', 'client')->countAllResults();
-        } catch (\Exception $error) {
-            $clientsCount = "Server Issue: " . $error;
-        }
+        $usersModel = new UsersModel();
+        $clientsCount = $usersModel->where('type', 'client')->countAllResults();
 
         $session = session();
-        $user = $session->get('user') ?? [];
-        $firstName = $user['first_name'] ?? 'Admin';
+        $firstName = $session->get('user')['first_name'] ?? 'Admin';
 
         return view('admin/adminDashboard', [
             'clientsCount' => $clientsCount,
@@ -51,53 +41,46 @@ class Admin extends BaseController
         ]);
     }
 
-    /**
-     * STOCKS PAGE — loads books from stock database
-     */
     public function stockPage()
     {
         $this->checkAdminAccess();
 
         $session = session();
-        $user = $session->get('user') ?? [];
-        $firstName = $user['first_name'] ?? 'Admin';
+        $firstName = $session->get('user')['first_name'] ?? 'Admin';
 
-        // ⭐ LOAD STOCKS FROM DATABASE
         $stocksModel = new StocksModel();
         $stocks = $stocksModel->findAll();
 
         return view('admin/stockPage', [
             'adminFirstName' => $firstName,
-            'stocks' => $stocks   // ⭐ PASS STOCK DATA TO VIEW
+            'stocks' => $stocks
         ]);
     }
 
-    /**
-     * Requests Page
-     */
     public function requestPage()
     {
         $this->checkAdminAccess();
 
         $session = session();
-        $user = $session->get('user') ?? [];
-        $firstName = $user['first_name'] ?? 'Admin';
+        $firstName = $session->get('user')['first_name'] ?? 'Admin';
+
+        $requestsModel = new RequestsModel();
+
+        // ⭐ SORT LOWEST → HIGHEST
+        $requests = $requestsModel->orderBy('id', 'ASC')->findAll();
 
         return view('admin/requestPage', [
-            'adminFirstName' => $firstName
+            'adminFirstName' => $firstName,
+            'requests' => $requests
         ]);
     }
 
-    /**
-     * ACCOUNTS PAGE — Loads users from DB
-     */
     public function accountsPage()
     {
         $this->checkAdminAccess();
 
         $session = session();
-        $user = $session->get('user') ?? [];
-        $firstName = $user['first_name'] ?? 'Admin';
+        $firstName = $session->get('user')['first_name'] ?? 'Admin';
 
         $usersModel = new UsersModel();
         $accounts = $usersModel->findAll();
@@ -108,9 +91,6 @@ class Admin extends BaseController
         ]);
     }
 
-    /**
-     * UPDATE USER — Called by Edit Modal
-     */
     public function updateAccount($id)
     {
         $this->checkAdminAccess();
@@ -122,7 +102,6 @@ class Admin extends BaseController
             return redirect()->to('/admin/accountsPage')->with('error', 'User not found.');
         }
 
-        // Gather fields
         $data = [
             'first_name'  => $this->request->getPost('first_name'),
             'middle_name' => $this->request->getPost('middle_name'),
@@ -130,14 +109,25 @@ class Admin extends BaseController
             'email'       => $this->request->getPost('email'),
         ];
 
-        // Update password if provided
         if (!empty($this->request->getPost('password'))) {
             $data['password_hash'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
         }
 
-        // Save update
         $usersModel->update($id, $data);
 
-        return redirect()->to('/admin/accountsPage')->with('message', 'User updated successfully.');
+        return redirect()->to('/admin/accountsPage')->with('message', 'User updated.');
+    }
+
+    // ⭐ UPDATE REQUEST STATUS
+    public function updateRequestStatus($id)
+    {
+        $this->checkAdminAccess();
+
+        $requestsModel = new RequestsModel();
+        $newStatus = $this->request->getPost('status');
+
+        $requestsModel->update($id, ['status' => $newStatus]);
+
+        return redirect()->to('/admin/requestPage')->with('message', 'Status updated successfully.');
     }
 }
