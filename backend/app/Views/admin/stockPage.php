@@ -127,6 +127,7 @@ $currentPath = $uri->getPath();
 
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
 
+                                        <!-- EDIT -->
                                         <a href="#"
                                             onclick="openEditBook(
                                                 '<?= $book->id ?>',
@@ -140,9 +141,10 @@ $currentPath = $uri->getPath();
                                             ✏️ Edit
                                         </a>
 
-                                        <a href="/admin/stocks/delete/<?= esc($book->id) ?>"
-                                            class="mx-2 font-semibold text-red-500 hover:text-red-600"
-                                            onclick="return confirm('Are you sure you want to delete this book?')">
+                                        <!-- DELETE -->
+                                        <a href="#"
+                                            onclick="openDeleteBook('<?= $book->id ?>', `<?= addslashes($book->name) ?>`)"
+                                            class="mx-2 font-semibold text-red-500 hover:text-red-600">
                                             🗑️ Delete
                                         </a>
 
@@ -190,8 +192,7 @@ $currentPath = $uri->getPath();
         </div>
     </aside>
 
-
-    <!-- ADD NEW BOOK MODAL -->
+    <!-- ADD BOOK MODAL -->
     <dialog id="addBookModal" class="p-0 rounded-2xl w-[95%] max-w-lg backdrop:bg-black/60">
         <form method="post" action="/admin/stocks/create"
             class="bg-white p-6 rounded-2xl border border-[#FCE77C] shadow-xl space-y-4">
@@ -201,39 +202,19 @@ $currentPath = $uri->getPath();
             <h3 class="text-3xl font-bold text-[#E15A37] header-title mb-4">Add New Book</h3>
 
             <div class="grid grid-cols-1 gap-3">
-
-                <input type="text" name="name" placeholder="Book Title"
-                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
-
-                <input type="text" name="image" placeholder="Image URL"
-                    class="border border-[#FCE77C] px-3 py-2 rounded-lg">
-
-                <textarea name="description" placeholder="Book Description" rows="4"
-                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required></textarea>
-
-                <input type="number" step="0.01" name="price" placeholder="Price"
-                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
-
-                <input type="number" name="quantity" placeholder="Stock Quantity"
-                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
-
+                <input type="text" name="name" placeholder="Book Title" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="text" name="image" placeholder="Image URL" class="border border-[#FCE77C] px-3 py-2 rounded-lg">
+                <textarea name="description" placeholder="Book Description" rows="4" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required></textarea>
+                <input type="number" step="0.01" name="price" placeholder="Price" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="number" name="quantity" placeholder="Stock Quantity" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
             </div>
 
             <div class="flex justify-end gap-3 pt-4">
-                <button type="button" onclick="closeAddBook()"
-                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
-                    Cancel
-                </button>
-
-                <button type="submit"
-                    class="px-6 py-2 bg-[#E15A37] text-white rounded-lg hover:bg-[#ED865A]">
-                    Add Book
-                </button>
+                <button type="button" onclick="closeAddBook()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-[#E15A37] text-white rounded-lg hover:bg-[#ED865A]">Add Book</button>
             </div>
-
         </form>
     </dialog>
-
 
     <!-- EDIT BOOK MODAL -->
     <dialog id="editBookModal" class="p-0 rounded-2xl w-[95%] max-w-lg backdrop:bg-black/60">
@@ -247,37 +228,48 @@ $currentPath = $uri->getPath();
             <input type="hidden" name="id" id="edit_id">
 
             <div class="grid grid-cols-1 gap-3">
-
-                <input type="text" id="edit_name" name="name"
-                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
-
-                <input type="text" id="edit_image" name="image"
-                    class="border border-[#FCE77C] px-3 py-2 rounded-lg">
-
-                <textarea id="edit_description" name="description" rows="4"
-                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required></textarea>
-
-                <input type="number" step="0.01" id="edit_price" name="price"
-                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
-
-                <input type="number" id="edit_quantity" name="quantity"
-                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
-
+                <input type="text" id="edit_name" name="name" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="text" id="edit_image" name="image" class="border border-[#FCE77C] px-3 py-2 rounded-lg">
+                <textarea id="edit_description" name="description" rows="4" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required></textarea>
+                <input type="number" step="0.01" id="edit_price" name="price" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="number" id="edit_quantity" name="quantity" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
             </div>
 
             <div class="flex justify-end gap-3 pt-4">
-                <button type="button" onclick="closeEditBook()"
-                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                <button type="button" onclick="closeEditBook()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-[#E15A37] text-white rounded-lg hover:bg-[#ED865A]">Save Changes</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- DELETE BOOK MODAL -->
+    <dialog id="deleteBookModal" class="p-0 rounded-2xl w-[90%] max-w-md backdrop:bg-black/60">
+
+        <form method="post" id="deleteBookForm"
+            class="bg-white p-6 rounded-2xl border border-[#FCE77C] shadow-xl">
+
+            <?= csrf_field() ?>
+
+            <h3 class="text-2xl font-bold text-[#E15A37] header-title mb-4">⚠️ Delete Book</h3>
+
+            <p class="text-gray-700 mb-6">
+                Are you sure you want to delete
+                <strong id="delete_book_name"></strong>?
+                This action cannot be undone.
+            </p>
+
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="closeDeleteBook()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">
                     Cancel
                 </button>
 
-                <button type="submit"
-                    class="px-6 py-2 bg-[#E15A37] text-white rounded-lg hover:bg-[#ED865A]">
-                    Save Changes
+                <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    Delete
                 </button>
             </div>
 
         </form>
+
     </dialog>
 
 
@@ -306,6 +298,19 @@ $currentPath = $uri->getPath();
 
         function closeEditBook() {
             document.getElementById('editBookModal').close();
+        }
+
+        function openDeleteBook(id, name) {
+            document.getElementById('delete_book_name').textContent = name;
+
+            // Set form action with ID
+            document.getElementById('deleteBookForm').action = `/admin/stocks/delete/${id}`;
+
+            document.getElementById('deleteBookModal').showModal();
+        }
+
+        function closeDeleteBook() {
+            document.getElementById('deleteBookModal').close();
         }
     </script>
 
