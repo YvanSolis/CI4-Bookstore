@@ -2,9 +2,7 @@
 
 use CodeIgniter\Router\RouteCollection;
 
-/**
-
-@var RouteCollection $routes*/
+/**@var RouteCollection $routes*/
 $routes->get('/', 'Users::index');
 $routes->get('/moodboardPage', 'Users::moodboard');
 $routes->get('/roadmapPage', 'Users::roadmap');
@@ -25,5 +23,6 @@ $routes->get('/admin/stockPage', 'Admin::stockPage');
 $routes->get('/admin/requestPage', 'Admin::requestPage');
 $routes->get('/admin/accountsPage', 'Admin::accountsPage');
 
-// ⭐Accounts Management (NEEDED FOR YOUR MODAL)
+// ⭐Accounts Management
 $routes->post('/admin/accounts/create', 'UserCRUDtest\UserCreate::createAccount');
+$routes->post('/admin/accounts/update/(:num)', 'Admin::updateAccount/$1');

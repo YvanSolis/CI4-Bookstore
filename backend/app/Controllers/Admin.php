@@ -10,8 +10,6 @@ class Admin extends BaseController
 {
     /**
      * Enforce admin-only access
-     *
-     * @throws ForbiddenException
      */
     private function checkAdminAccess()
     {
@@ -33,19 +31,15 @@ class Admin extends BaseController
      */
     public function showDashboard()
     {
-        // Enforce admin-only access
         $this->checkAdminAccess();
 
         try {
             $usersModel = new UsersModel();
-
-            // Count all client accounts (ignore account_status)
             $clientsCount = $usersModel->where('type', 'client')->countAllResults();
         } catch (\Exception $error) {
             $clientsCount = "Server Issue: " . $error;
         }
 
-        // Get the admin's first name from session (safe default)
         $session = session();
         $user = $session->get('user') ?? [];
         $firstName = $user['first_name'] ?? 'Admin';
@@ -72,6 +66,9 @@ class Admin extends BaseController
         ]);
     }
 
+    /**
+     * Requests Page
+     */
     public function requestPage()
     {
         $this->checkAdminAccess();
@@ -85,6 +82,9 @@ class Admin extends BaseController
         ]);
     }
 
+    /**
+     * ACCOUNTS PAGE — Loads users from DB
+     */
     public function accountsPage()
     {
         $this->checkAdminAccess();
@@ -93,13 +93,45 @@ class Admin extends BaseController
         $user = $session->get('user') ?? [];
         $firstName = $user['first_name'] ?? 'Admin';
 
-        // Load real accounts from database
         $usersModel = new UsersModel();
-        $accounts = $usersModel->findAll();
+        $accounts = $usersModel->findAll(); // ENTITY objects
 
         return view('admin/accountsPage', [
             'adminFirstName' => $firstName,
             'accounts' => $accounts
         ]);
+    }
+
+    /**
+     * UPDATE USER — Called by Edit Modal
+     */
+    public function updateAccount($id)
+    {
+        $this->checkAdminAccess();
+
+        $usersModel = new UsersModel();
+        $user = $usersModel->find($id);
+
+        if (!$user) {
+            return redirect()->to('/admin/accountsPage')->with('error', 'User not found.');
+        }
+
+        // Gather updated fields
+        $data = [
+            'first_name'  => $this->request->getPost('first_name'),
+            'middle_name' => $this->request->getPost('middle_name'),
+            'last_name'   => $this->request->getPost('last_name'),
+            'email'       => $this->request->getPost('email'),
+        ];
+
+        // Update password only if provided
+        if (!empty($this->request->getPost('password'))) {
+            $data['password_hash'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
+        }
+
+        // Save to DB
+        $usersModel->update($id, $data);
+
+        return redirect()->to('/admin/accountsPage')->with('message', 'User updated successfully.');
     }
 }
