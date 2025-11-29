@@ -2,7 +2,7 @@
 
 use CodeIgniter\Router\RouteCollection;
 
-/**@var RouteCollection $routes*/
+/** @var RouteCollection $routes */
 $routes->get('/', 'Users::index');
 $routes->get('/moodboardPage', 'Users::moodboard');
 $routes->get('/roadmapPage', 'Users::roadmap');
@@ -20,12 +20,16 @@ $routes->get('/cart', 'Users::cart');
 $routes->get('/checkout', 'Users::checkout');
 $routes->post('/submitRequest', 'Request::submit');
 
-
-// Admin dashboard
+// -----------------------
+// ADMIN ROUTES
+// -----------------------
 $routes->get('/admin/adminDashboard', 'Admin::showDashboard');
 $routes->get('/admin/stockPage', 'Admin::stockPage');
 $routes->get('/admin/requestPage', 'Admin::requestPage');
 $routes->get('/admin/accountsPage', 'Admin::accountsPage');
+
+// ⭐ Request status update
+$routes->post('/admin/requests/updateStatus/(:num)', 'Admin::updateRequestStatus/$1');
 
 // ⭐Accounts Management
 $routes->post('/admin/accounts/create', 'UserCRUDtest\UserCreate::createAccount');
