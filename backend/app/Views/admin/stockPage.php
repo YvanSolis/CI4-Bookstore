@@ -3,12 +3,7 @@ $session = session();
 $uri = service('uri');
 $currentPath = $uri->getPath();
 
-// Sample stock data
-$stocks = [
-    ['id' => 'BK-001', 'title' => 'The Lord of the Rings', 'author' => 'J.R.R. Tolkien', 'category' => 'Fantasy', 'stock' => 34, 'price' => 199],
-    ['id' => 'BK-002', 'title' => 'Atomic Habits', 'author' => 'James Clear', 'category' => 'Self-help', 'stock' => 50, 'price' => 299],
-    ['id' => 'BK-003', 'title' => 'Sapiens: A Brief History of Humankind', 'author' => 'Yuval Noah Harari', 'category' => 'History', 'stock' => 20, 'price' => 259],
-];
+// IMPORTANT: $stocks comes from Admin::stockPage() controller
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +16,7 @@ $stocks = [
     <link rel="shortcut icon" type="image/png" href="/assets/bookstore_icon.ico" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+
     <style>
         body {
             font-family: 'Roboto Slab', serif;
@@ -32,13 +28,11 @@ $stocks = [
             font-weight: 400;
         }
 
-        /* Header */
         .dashboard-header {
             background-color: #E15A37;
             color: #fff;
         }
 
-        /* Sidebar */
         .sidebar {
             background-color: #E15A37;
             color: #fff;
@@ -53,13 +47,11 @@ $stocks = [
             color: #fff;
         }
 
-        /* Cards hover */
         .card-hover:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 20px rgba(225, 90, 55, 0.3);
         }
 
-        /* Accent highlights */
         .accent-yellow {
             background-color: #FCE77C;
         }
@@ -80,42 +72,86 @@ $stocks = [
 
         <!-- Stock Card -->
         <div class="bg-white shadow-xl mx-auto mt-6 p-8 border border-[#FCE77C] rounded-2xl max-w-7xl card-hover">
+
             <div class="flex justify-between items-center mb-6">
                 <h2 class="font-bold text-[#E15A37] text-4xl header-title">📦 Stock List</h2>
-                <a href="/admin/stocks/add" class="hover:bg-[#ED865A] px-6 py-3 rounded-full font-semibold text-lg transition accent-yellow">➕ Add New Book</a>
+                <a href="/admin/stocks/add" class="hover:bg-[#ED865A] px-6 py-3 rounded-full font-semibold text-lg transition accent-yellow">
+                    ➕ Add New Book
+                </a>
             </div>
 
             <div class="overflow-x-auto">
                 <table class="border border-[#FCE77C] rounded-xl w-full">
                     <thead class="bg-[#E15A37] text-white">
                         <tr>
-                            <th class="px-6 py-3 text-left uppercase">Book ID</th>
+                            <th class="px-6 py-3 text-left uppercase">ID</th>
+                            <th class="px-6 py-3 text-left uppercase">Image</th>
                             <th class="px-6 py-3 text-left uppercase">Title</th>
-                            <th class="px-6 py-3 text-left uppercase">Author</th>
-                            <th class="px-6 py-3 text-left uppercase">Category</th>
-                            <th class="px-6 py-3 text-center uppercase">Stock</th>
+                            <th class="px-6 py-3 text-left uppercase">Description</th>
+                            <th class="px-6 py-3 text-center uppercase">Quantity</th>
                             <th class="px-6 py-3 text-center uppercase">Price</th>
                             <th class="px-6 py-3 text-center uppercase">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody class="divide-y divide-[#FCE77C]">
-                        <?php foreach ($stocks as $book): ?>
-                            <tr class="hover:bg-[#FFF8E7] transition">
-                                <td class="px-6 py-4 text-gray-800"><?= esc($book['id']) ?></td>
-                                <td class="px-6 py-4 font-semibold text-gray-900"><?= esc($book['title']) ?></td>
-                                <td class="px-6 py-4 text-gray-700"><?= esc($book['author']) ?></td>
-                                <td class="px-6 py-4 text-gray-700"><?= esc($book['category']) ?></td>
-                                <td class="px-6 py-4 font-bold text-gray-800 text-center"><?= esc($book['stock']) ?></td>
-                                <td class="px-6 py-4 font-semibold text-[#E15A37] text-center">₱<?= number_format($book['price'], 2) ?></td>
-                                <td class="px-6 py-4 text-center">
-                                    <a href="/admin/stocks/edit/<?= esc($book['id']) ?>" class="mx-2 font-semibold text-[#E15A37] hover:text-[#ED865A]">✏️ Edit</a>
-                                    <a href="/admin/stocks/delete/<?= esc($book['id']) ?>" class="mx-2 font-semibold text-red-500 hover:text-red-600" onclick="return confirm('Are you sure?')">🗑️ Delete</a>
+
+                        <?php if (!empty($stocks)): ?>
+                            <?php foreach ($stocks as $book): ?>
+                                <tr class="hover:bg-[#FFF8E7] transition">
+
+                                    <td class="px-6 py-4 text-gray-800">BK-<?= esc($book->id) ?></td>
+
+                                    <td class="px-6 py-4">
+                                        <?php if (!empty($book->image)): ?>
+                                            <img src="<?= esc($book->image) ?>" class="w-14 h-20 object-cover rounded shadow">
+                                        <?php else: ?>
+                                            <span class="text-gray-500 italic">No image</span>
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <td class="px-6 py-4 font-semibold text-gray-900"><?= esc($book->name) ?></td>
+
+                                    <td class="px-6 py-4 text-gray-700">
+                                        <?= esc(substr($book->description, 0, 60)) ?>...
+                                    </td>
+
+                                    <td class="px-6 py-4 font-bold text-gray-800 text-center"><?= esc($book->quantity) ?></td>
+
+                                    <td class="px-6 py-4 font-semibold text-[#E15A37] text-center">
+                                        ₱<?= number_format($book->price, 2) ?>
+                                    </td>
+
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+
+                                        <a href="/admin/stocks/edit/<?= esc($book->id) ?>"
+                                            class="mx-2 font-semibold text-[#E15A37] hover:text-[#ED865A]">
+                                            ✏️ Edit
+                                        </a>
+
+                                        <a href="/admin/stocks/delete/<?= esc($book->id) ?>"
+                                            class="mx-2 font-semibold text-red-500 hover:text-red-600"
+                                            onclick="return confirm('Are you sure you want to delete this book?')">
+                                            🗑️ Delete
+                                        </a>
+
+                                    </td>
+
+
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7" class="text-center py-6 text-gray-600">
+                                    No stock items found.
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php endif; ?>
+
                     </tbody>
                 </table>
             </div>
+
         </div>
 
     </main>

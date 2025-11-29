@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UsersModel;
+use App\Models\StocksModel;   // ⭐ ADD THIS
 use CodeIgniter\Exceptions\ForbiddenException;
 
 class Admin extends BaseController
@@ -51,7 +52,7 @@ class Admin extends BaseController
     }
 
     /**
-     * Stocks Page
+     * STOCKS PAGE — loads books from stock database
      */
     public function stockPage()
     {
@@ -61,8 +62,13 @@ class Admin extends BaseController
         $user = $session->get('user') ?? [];
         $firstName = $user['first_name'] ?? 'Admin';
 
+        // ⭐ LOAD STOCKS FROM DATABASE
+        $stocksModel = new StocksModel();
+        $stocks = $stocksModel->findAll();
+
         return view('admin/stockPage', [
-            'adminFirstName' => $firstName
+            'adminFirstName' => $firstName,
+            'stocks' => $stocks   // ⭐ PASS STOCK DATA TO VIEW
         ]);
     }
 
@@ -94,7 +100,7 @@ class Admin extends BaseController
         $firstName = $user['first_name'] ?? 'Admin';
 
         $usersModel = new UsersModel();
-        $accounts = $usersModel->findAll(); // ENTITY objects
+        $accounts = $usersModel->findAll();
 
         return view('admin/accountsPage', [
             'adminFirstName' => $firstName,
@@ -116,7 +122,7 @@ class Admin extends BaseController
             return redirect()->to('/admin/accountsPage')->with('error', 'User not found.');
         }
 
-        // Gather updated fields
+        // Gather fields
         $data = [
             'first_name'  => $this->request->getPost('first_name'),
             'middle_name' => $this->request->getPost('middle_name'),
@@ -124,12 +130,12 @@ class Admin extends BaseController
             'email'       => $this->request->getPost('email'),
         ];
 
-        // Update password only if provided
+        // Update password if provided
         if (!empty($this->request->getPost('password'))) {
             $data['password_hash'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
         }
 
-        // Save to DB
+        // Save update
         $usersModel->update($id, $data);
 
         return redirect()->to('/admin/accountsPage')->with('message', 'User updated successfully.');
