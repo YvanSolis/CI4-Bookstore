@@ -2,7 +2,6 @@
 $session = session();
 $uri = service('uri');
 $currentPath = $uri->getPath();
-
 // IMPORTANT: $stocks comes from Admin::stockPage() controller
 ?>
 
@@ -39,7 +38,7 @@ $currentPath = $uri->getPath();
         }
 
         .sidebar-link {
-            transition: all 0.2s ease;
+            transition: 0.2s ease;
         }
 
         .sidebar-link:hover {
@@ -66,7 +65,9 @@ $currentPath = $uri->getPath();
         <header class="flex justify-between items-center shadow-md px-6 py-4 dashboard-header">
             <h1 class="text-3xl tracking-wide header-title">Stock Management</h1>
             <div class="flex items-center space-x-4">
-                <span class="font-semibold">Welcome, <?= esc($session->get('user')['first_name'] ?? 'Admin') ?></span>
+                <span class="font-semibold">
+                    Welcome, <?= esc($session->get('user')['first_name'] ?? 'Admin') ?>
+                </span>
             </div>
         </header>
 
@@ -75,11 +76,11 @@ $currentPath = $uri->getPath();
 
             <div class="flex justify-between items-center mb-6">
                 <h2 class="font-bold text-[#E15A37] text-4xl header-title">📦 Stock List</h2>
+
                 <button onclick="openAddBook()"
                     class="hover:bg-[#ED865A] px-6 py-3 rounded-full font-semibold text-lg transition accent-yellow">
                     ➕ Add New Book
                 </button>
-
             </div>
 
             <div class="overflow-x-auto">
@@ -126,7 +127,15 @@ $currentPath = $uri->getPath();
 
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
 
-                                        <a href="/admin/stocks/edit/<?= esc($book->id) ?>"
+                                        <a href="#"
+                                            onclick="openEditBook(
+                                                '<?= $book->id ?>',
+                                                `<?= addslashes($book->name) ?>`,
+                                                `<?= addslashes($book->image) ?>`,
+                                                `<?= addslashes($book->description) ?>`,
+                                                '<?= $book->price ?>',
+                                                '<?= $book->quantity ?>'
+                                            )"
                                             class="mx-2 font-semibold text-[#E15A37] hover:text-[#ED865A]">
                                             ✏️ Edit
                                         </a>
@@ -138,7 +147,6 @@ $currentPath = $uri->getPath();
                                         </a>
 
                                     </td>
-
 
                                 </tr>
                             <?php endforeach; ?>
@@ -226,6 +234,54 @@ $currentPath = $uri->getPath();
         </form>
     </dialog>
 
+
+    <!-- EDIT BOOK MODAL -->
+    <dialog id="editBookModal" class="p-0 rounded-2xl w-[95%] max-w-lg backdrop:bg-black/60">
+        <form method="post" id="editBookForm"
+            class="bg-white p-6 rounded-2xl border border-[#FCE77C] shadow-xl space-y-4">
+
+            <?= csrf_field() ?>
+
+            <h3 class="text-3xl font-bold text-[#E15A37] header-title mb-4">✏️ Edit Book</h3>
+
+            <input type="hidden" name="id" id="edit_id">
+
+            <div class="grid grid-cols-1 gap-3">
+
+                <input type="text" id="edit_name" name="name"
+                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+
+                <input type="text" id="edit_image" name="image"
+                    class="border border-[#FCE77C] px-3 py-2 rounded-lg">
+
+                <textarea id="edit_description" name="description" rows="4"
+                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required></textarea>
+
+                <input type="number" step="0.01" id="edit_price" name="price"
+                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+
+                <input type="number" id="edit_quantity" name="quantity"
+                    class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" onclick="closeEditBook()"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                    class="px-6 py-2 bg-[#E15A37] text-white rounded-lg hover:bg-[#ED865A]">
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+    </dialog>
+
+
+    <!-- JS for Modals -->
     <script>
         function openAddBook() {
             document.getElementById('addBookModal').showModal();
@@ -233,6 +289,23 @@ $currentPath = $uri->getPath();
 
         function closeAddBook() {
             document.getElementById('addBookModal').close();
+        }
+
+        function openEditBook(id, name, image, description, price, quantity) {
+            document.getElementById('edit_id').value = id;
+            document.getElementById('edit_name').value = name;
+            document.getElementById('edit_image').value = image;
+            document.getElementById('edit_description').value = description;
+            document.getElementById('edit_price').value = price;
+            document.getElementById('edit_quantity').value = quantity;
+
+            document.getElementById('editBookForm').action = `/admin/stocks/update/${id}`;
+
+            document.getElementById('editBookModal').showModal();
+        }
+
+        function closeEditBook() {
+            document.getElementById('editBookModal').close();
         }
     </script>
 
