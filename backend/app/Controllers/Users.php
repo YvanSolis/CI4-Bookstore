@@ -53,4 +53,27 @@ class Users extends BaseController
             'userFirstName' => $session->get('user')['first_name'] ?? 'Reader'
         ]);
     }
+
+    public function checkout()
+    {
+        $session = session();
+
+        // Redirect if user is not logged in
+        if (!$session->has('user')) {
+            return redirect()->to('/loginPage');
+        }
+
+        $cartItems = $session->get('cart') ?? [];
+        $totalPrice = 0;
+
+        foreach ($cartItems as $item) {
+            $totalPrice += $item['price'] * $item['quantity'];
+        }
+
+        return view('user/checkoutPage', [
+            'cartItems' => $cartItems,
+            'totalPrice' => $totalPrice,
+            'userFirstName' => $session->get('user')['first_name'] ?? 'Reader'
+        ]);
+    }
 }

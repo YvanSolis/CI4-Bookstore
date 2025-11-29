@@ -17,7 +17,8 @@ $routes->post('/logout', 'Auth::logout');
 // Shop Page (Require Login)
 //$routes->get('/shop', 'Users::shop');
 $routes->get('/shop', 'Stock::shop');
-$routes->get('/cart', 'Users::cart');
+$routes->get('/cart', 'Users::cart');             // existing cart page
+$routes->get('/checkout', 'Users::checkout');     // new checkout page
 
 // Admin dashboard
 $routes->get('/admin/adminDashboard', 'Admin::showDashboard');
