@@ -25,6 +25,9 @@ $routes->post('/cart/add', 'Cart::add');
 $routes->post('/cart/updateQuantity/(:num)', 'Cart::updateQuantity/$1');
 $routes->get('/cart/remove/(:num)', 'Cart::remove/$1');
 
+// CHECKOUT
+$routes->post('/checkout/placeOrder', 'Users::placeOrder');
+
 // -----------------------
 // ADMIN ROUTES
 // -----------------------

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\StocksModel;
 
 class Users extends BaseController
 {
@@ -34,10 +35,17 @@ class Users extends BaseController
     private function getCart()
     {
         $session = session();
+
+        if (!$session->has('user')) {
+            return [];
+        }
+
         $userId = $session->get('user')['id'];
         $cartKey = "cart_$userId";
 
         $cart = $session->get($cartKey) ?? [];
+
+        // Sync with session "cart"
         $session->set('cart', $cart);
 
         return $cart;
@@ -49,8 +57,8 @@ class Users extends BaseController
         if (!$session->has('user')) return redirect()->to('/loginPage');
 
         $cartItems = $this->getCart();
-        $totalPrice = 0;
 
+        $totalPrice = 0;
         foreach ($cartItems as $item) {
             $totalPrice += $item['price'] * $item['quantity'];
         }
@@ -68,8 +76,8 @@ class Users extends BaseController
         if (!$session->has('user')) return redirect()->to('/loginPage');
 
         $cartItems = $this->getCart();
-        $totalPrice = 0;
 
+        $totalPrice = 0;
         foreach ($cartItems as $item) {
             $totalPrice += $item['price'] * $item['quantity'];
         }
@@ -79,5 +87,49 @@ class Users extends BaseController
             'totalPrice' => $totalPrice,
             'userFirstName' => $session->get('user')['first_name'] ?? 'Reader'
         ]);
+    }
+
+    /**
+     * PLACE ORDER — deduct stock + clear cart
+     */
+    public function placeOrder()
+    {
+        $session = session();
+
+        if (!$session->has('user')) {
+            return redirect()->to('/loginPage');
+        }
+
+        $userId = $session->get('user')['id'];
+        $cartKey = "cart_$userId";
+
+        $cart = $this->getCart();
+
+        if (empty($cart)) {
+            return redirect()->to('/cart')->with('error', 'Your cart is empty.');
+        }
+
+        $stocksModel = new StocksModel();
+
+        // 🔥 Deduct stock for each product purchased
+        foreach ($cart as $item) {
+
+            $product = $stocksModel->find($item['id']);
+
+            if ($product) {
+                $newQuantity = max(0, $product->quantity - $item['quantity']);
+
+                // update stock
+                $stocksModel->update($item['id'], [
+                    'quantity' => $newQuantity
+                ]);
+            }
+        }
+
+        // 🔥 Clear only THIS user's cart
+        $session->remove($cartKey);
+        $session->remove('cart');
+
+        return redirect()->to('/shop')->with('success', 'Order placed!');
     }
 }

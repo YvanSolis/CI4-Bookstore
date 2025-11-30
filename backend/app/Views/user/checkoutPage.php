@@ -72,15 +72,15 @@ foreach ($cart as $item) {
                     Checkout, <?= esc($userFirstName) ?>!
                 </h2>
                 <p class="mt-2 text-white/90 text-lg md:text-xl">
-                    Review your cart and complete your purchase.
+                    Review your order and place your purchase.
                 </p>
             </section>
 
-            <!-- Cart & Checkout Container -->
+            <!-- Cart Summary -->
             <div class="bg-white shadow-xl mx-auto mt-6 p-8 border border-[#FCE77C] rounded-2xl max-w-6xl">
 
                 <h3 class="mb-8 font-bold text-[#E15A37] text-4xl text-center header-title">
-                    Your Cart
+                    Your Cart Summary
                 </h3>
 
                 <?php if (!empty($cart)): ?>
@@ -97,7 +97,7 @@ foreach ($cart as $item) {
                             <tbody class="divide-y divide-[#FCE77C]">
                                 <?php foreach ($cart as $item): ?>
                                     <tr class="hover:bg-[#FFF8E7] transition">
-                                        <td class="px-6 py-4 font-semibold"><?= esc($item['name']) ?></td>
+                                        <td class="px-6 py-4 font-semibold"><?= esc($item['title']) ?></td>
                                         <td class="px-6 py-4 text-center"><?= esc($item['quantity']) ?></td>
                                         <td class="px-6 py-4 text-center">₱<?= number_format($item['price'], 2) ?></td>
                                         <td class="px-6 py-4 text-center">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
@@ -108,25 +108,16 @@ foreach ($cart as $item) {
                     </div>
 
                     <!-- Total -->
-                    <div class="mt-8 font-bold text-2xl text-right">
+                    <div class="mt-8 font-bold text-3xl text-right text-[#514D4D]">
                         Total: ₱<?= number_format($total, 2) ?>
                     </div>
 
-                    <!-- Checkout Form -->
-                    <div class="bg-white shadow-md mt-12 p-8 border border-[#FCE77C] rounded-2xl">
-                        <h3 class="mb-4 font-bold text-[#E15A37] text-2xl header-title">Shipping Details</h3>
-                        <form action="/checkout/submit" method="post">
+                    <!-- PLACE ORDER BUTTON -->
+                    <div class="mt-10 text-right">
+                        <form action="/checkout/placeOrder" method="post">
                             <?= csrf_field() ?>
-                            <div class="mb-4">
-                                <input type="text" name="fullname" placeholder="Full Name" class="p-3 border border-[#E15A37] rounded-lg focus:outline-none focus:ring-[#E15A37]/50 focus:ring-2 w-full">
-                            </div>
-                            <div class="mb-4">
-                                <input type="text" name="address" placeholder="Address" class="p-3 border border-[#E15A37] rounded-lg focus:outline-none focus:ring-[#E15A37]/50 focus:ring-2 w-full">
-                            </div>
-                            <div class="mb-4">
-                                <input type="text" name="contact" placeholder="Contact Number" class="p-3 border border-[#E15A37] rounded-lg focus:outline-none focus:ring-[#E15A37]/50 focus:ring-2 w-full">
-                            </div>
-                            <button type="submit" class="bg-[#E15A37] hover:bg-[#ED865A] px-6 py-3 rounded-lg w-full font-semibold text-white">
+                            <button type="submit"
+                                class="bg-[#E15A37] hover:bg-[#ED865A] px-8 py-4 rounded-lg text-white font-bold text-xl shadow-lg">
                                 Place Order
                             </button>
                         </form>
@@ -139,6 +130,7 @@ foreach ($cart as $item) {
             </div>
 
         </main>
+
 
         <!-- Footer -->
         <footer class="mt-auto">
