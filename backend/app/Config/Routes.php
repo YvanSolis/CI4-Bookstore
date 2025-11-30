@@ -16,9 +16,14 @@ $routes->post('/logout', 'Auth::logout');
 
 // Shop Page
 $routes->get('/shop', 'Stock::shop');
-$routes->get('/cart', 'Users::cart');
 $routes->get('/checkout', 'Users::checkout');
 $routes->post('/submitRequest', 'Request::submit');
+
+// CART
+$routes->get('/cart', 'Users::cart');
+$routes->post('/cart/add', 'Cart::add');
+$routes->post('/cart/updateQuantity/(:num)', 'Cart::updateQuantity/$1');
+$routes->get('/cart/remove/(:num)', 'Cart::remove/$1');
 
 // -----------------------
 // ADMIN ROUTES

@@ -10,14 +10,10 @@ class Auth extends BaseController
     public function showLogin()
     {
         $session = session();
-        $errors = $session->getFlashdata('errors') ?? [];
-        $old = $session->getFlashdata('old') ?? [];
-        $success = $session->getFlashdata('success') ?? null;
-
         return view('auth/loginPage', [
-            'errors' => $errors,
-            'old' => $old,
-            'success' => $success,
+            'errors' => $session->getFlashdata('errors') ?? [],
+            'old' => $session->getFlashdata('old') ?? [],
+            'success' => $session->getFlashdata('success') ?? null,
         ]);
     }
 
@@ -50,7 +46,7 @@ class Auth extends BaseController
 
         $type = strtolower($user->type ?? 'client');
 
-        // Set session
+        // Set session user data
         $session->set('user', [
             'id' => $user->id,
             'email' => $user->email,
@@ -59,33 +55,54 @@ class Auth extends BaseController
             'type' => $type,
         ]);
 
+        // 🔥 Load this user's saved cart
+        $cartKey = "cart_" . $user->id;
+        if ($session->has($cartKey)) {
+            $session->set('cart', $session->get($cartKey));
+        } else {
+            $session->set('cart', []);
+        }
+
         // Redirect based on type
         if ($type === 'admin') {
             return redirect()->to('/admin/adminDashboard');
         }
 
-        return redirect()->to('/shop'); // <-- redirect client users to shop
+        return redirect()->to('/shop');
     }
 
     public function logout()
     {
         $session = session();
-        $session->destroy();
 
-        return redirect()->to('/loginPage'); // redirect to login
+        // 🔥 Save user's cart before logout
+        if ($session->has('user')) {
+            $userId = $session->get('user')['id'];
+            $cartKey = "cart_$userId";
+
+            if ($session->has('cart')) {
+                $session->set($cartKey, $session->get('cart'));
+            }
+        }
+
+        // Destroy only user login, not cart storage
+        $session->remove('user');
+        $session->remove('cart');
+
+        return redirect()->to('/loginPage');
     }
 
     public function showSignup()
     {
         $session = session();
         if ($session->has('user')) {
-            return redirect()->to('/shop'); // already logged in
+            return redirect()->to('/shop');
         }
 
-        $errors = $session->getFlashdata('errors') ?? [];
-        $old = $session->getFlashdata('old') ?? [];
-
-        return view('auth/signupPage', ['errors' => $errors, 'old' => $old]);
+        return view('auth/signupPage', [
+            'errors' => $session->getFlashdata('errors') ?? [],
+            'old' => $session->getFlashdata('old') ?? []
+        ]);
     }
 
     public function signup()
@@ -94,9 +111,8 @@ class Auth extends BaseController
         $session = session();
         $validation = \Config\Services::validation();
 
-        $validation->setRule('first_name', 'First name', 'required|min_length[2]|max_length[100]');
-        $validation->setRule('middle_name', 'Middle name', 'permit_empty');
-        $validation->setRule('last_name', 'Last name', 'required|min_length[2]|max_length[100]');
+        $validation->setRule('first_name', 'First name', 'required|min_length[2]');
+        $validation->setRule('last_name', 'Last name', 'required|min_length[2]');
         $validation->setRule('email', 'Email', 'required|valid_email');
         $validation->setRule('password', 'Password', 'required|min_length[6]');
         $validation->setRule('password_confirm', 'Confirm Password', 'required|matches[password]');
@@ -113,7 +129,6 @@ class Auth extends BaseController
 
         if ($userModel->where('email', $post['email'])->first()) {
             $session->setFlashdata('errors', ['email' => 'Email is already registered']);
-            $session->setFlashdata('old', $post);
             return redirect()->back()->withInput();
         }
 
@@ -127,15 +142,9 @@ class Auth extends BaseController
             'account_status' => 1,
         ];
 
-        $inserted = $userModel->insert($data);
+        $userId = $userModel->insert($data);
 
-        if ($inserted === false) {
-            $session->setFlashdata('errors', ['general' => 'Could not create account']);
-            $session->setFlashdata('old', $post);
-            return redirect()->back()->withInput();
-        }
-
-        $newUser = $userModel->find($inserted);
+        $newUser = $userModel->find($userId);
 
         $session->set('user', [
             'id' => $newUser->id,
@@ -145,7 +154,8 @@ class Auth extends BaseController
             'type' => $newUser->type,
         ]);
 
-        $session->setFlashdata('success', 'Account created successfully!');
-        return redirect()->to('/shop'); // <-- redirect new users to shop
+        $session->set('cart', []); // new user empty cart
+
+        return redirect()->to('/shop');
     }
 }

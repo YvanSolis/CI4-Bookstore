@@ -31,16 +31,24 @@ class Users extends BaseController
         return view('user/roadmapPage');
     }
 
+    private function getCart()
+    {
+        $session = session();
+        $userId = $session->get('user')['id'];
+        $cartKey = "cart_$userId";
+
+        $cart = $session->get($cartKey) ?? [];
+        $session->set('cart', $cart);
+
+        return $cart;
+    }
+
     public function cart()
     {
         $session = session();
+        if (!$session->has('user')) return redirect()->to('/loginPage');
 
-        // Redirect if user not logged in
-        if (!$session->has('user')) {
-            return redirect()->to('/loginPage');
-        }
-
-        $cartItems = $session->get('cart') ?? [];
+        $cartItems = $this->getCart();
         $totalPrice = 0;
 
         foreach ($cartItems as $item) {
@@ -57,13 +65,9 @@ class Users extends BaseController
     public function checkout()
     {
         $session = session();
+        if (!$session->has('user')) return redirect()->to('/loginPage');
 
-        // Redirect if user is not logged in
-        if (!$session->has('user')) {
-            return redirect()->to('/loginPage');
-        }
-
-        $cartItems = $session->get('cart') ?? [];
+        $cartItems = $this->getCart();
         $totalPrice = 0;
 
         foreach ($cartItems as $item) {
