@@ -1,3 +1,7 @@
+<?php
+// Required: $accounts is now coming from the controller
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,132 +15,301 @@
 
     <style>
         body {
-            background-color: #f8f7f5;
             font-family: 'Roboto Slab', serif;
+            background-color: #f9f8f6;
         }
 
         .header-title {
-            font-family: 'Righteous', sans-serif;
+            font-family: "Righteous", sans-serif;
+            font-weight: 400;
         }
 
-        .custom-neutral {
-            background-color: #8B7E74;
+        .dashboard-header {
+            background-color: #E15A37;
+            color: #fff;
         }
 
-        .btn-main {
-            background-color: #8B7E74;
-            color: white;
-            transition: all 0.3s ease;
+        .sidebar {
+            background-color: #E15A37;
+            color: #fff;
         }
 
-        .btn-main:hover {
-            background-color: #A99D92;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(139, 126, 116, 0.3);
+        .sidebar-link {
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-link:hover {
+            background-color: #ED865A;
+            color: #fff;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(225, 90, 55, 0.3);
+        }
+
+        .accent-yellow {
+            background-color: #FCE77C;
         }
     </style>
 </head>
 
-<body class="flex flex-col min-h-screen">
+<body class="flex min-h-screen">
 
-    <!-- ✅ Accounts Page Header -->
-    <header class="flex justify-between items-center shadow-md px-6 py-4 text-gray-100 custom-neutral">
-        <h1 class="text-3xl tracking-wide header-title">User Accounts</h1>
-        <div class="flex items-center space-x-4">
-            <span class="font-semibold">Welcome, Admin</span>
-            <img src="/assets/profile_placeholder.png" alt="Admin Avatar" class="border border-[#A99D92] rounded-full w-10 h-10">
-        </div>
-    </header>
+    <main class="flex-1 bg-white/90 backdrop-blur-sm">
 
-    <main class="flex-grow p-10">
-        <div class="bg-white shadow-xl mx-auto p-8 border border-[#E5E0DC] rounded-2xl max-w-7xl">
+        <!-- HEADER -->
+        <header class="flex justify-between items-center shadow-md px-6 py-4 dashboard-header">
+            <h1 class="text-3xl tracking-wide header-title">Manage Accounts</h1>
+
+            <div class="flex items-center space-x-4">
+                <span class="font-semibold">Welcome, <?= esc($adminFirstName ?? 'Admin') ?></span>
+            </div>
+        </header>
+
+
+        <!-- MAIN CONTENT -->
+        <div class="bg-white shadow-xl mx-auto mt-6 p-8 border border-[#FCE77C] rounded-2xl max-w-7xl card-hover">
+
             <div class="flex justify-between items-center mb-8">
-                <h2 class="font-bold text-[#8B7E74] text-4xl header-title">👥 Manage Accounts</h2>
-                <a href="/admin/accounts/add" class="px-6 py-3 rounded-full font-semibold text-lg btn-main">➕ Add New User</a>
+                <h2 class="font-bold text-[#E15A37] text-4xl header-title">👥 Accounts</h2>
+
+                <a onclick="openAddModal()"
+                    class="hover:bg-[#ED865A] px-6 py-3 rounded-full font-semibold text-lg transition accent-yellow cursor-pointer">
+                    ➕ Add New User
+                </a>
             </div>
 
-            <!-- Search and Filter -->
-            <div class="flex md:flex-row flex-col justify-between gap-4 mb-6">
-                <input type="text" placeholder="Search name or email..." class="px-4 py-2 border border-[#E5E0DC] rounded-lg focus:outline-none focus:ring-[#8B7E74]/50 focus:ring-2 w-full md:w-1/3" />
-
-                <select class="px-4 py-2 border border-[#E5E0DC] rounded-lg focus:outline-none focus:ring-[#8B7E74]/50 focus:ring-2 w-full md:w-1/5">
-                    <option>All Roles</option>
-                    <option>Admin</option>
-                    <option>Client</option>
-                </select>
-            </div>
-
-            <!-- Accounts Table -->
+            <!-- ACCOUNTS TABLE -->
             <div class="overflow-x-auto">
-                <table class="bg-white border border-[#E5E0DC] rounded-xl min-w-full overflow-hidden">
-                    <thead class="bg-[#8B7E74] text-white">
+                <table class="bg-white border border-[#FCE77C] rounded-xl min-w-full overflow-hidden">
+                    <thead class="bg-[#E15A37] text-white">
                         <tr>
-                            <th class="px-6 py-3 font-semibold text-sm text-left uppercase">User ID</th>
-                            <th class="px-6 py-3 font-semibold text-sm text-left uppercase">Full Name</th>
-                            <th class="px-6 py-3 font-semibold text-sm text-left uppercase">Email</th>
-                            <th class="px-6 py-3 font-semibold text-sm text-center uppercase">Role</th>
-                            <th class="px-6 py-3 font-semibold text-sm text-center uppercase">Status</th>
-                            <th class="px-6 py-3 font-semibold text-sm text-center uppercase">Actions</th>
+                            <th class="px-6 py-3">User ID</th>
+                            <th class="px-6 py-3">Full Name</th>
+                            <th class="px-6 py-3">Email</th>
+                            <th class="px-6 py-3 text-center">Role</th>
+                            <th class="px-6 py-3 text-center">Status</th>
+                            <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-[#E5E0DC]">
-                        <?php
-                        $accounts = [
-                            ['id' => 'USR-001', 'name' => 'Mary Arwen L. Quemuel', 'email' => 'mlquemuel@fit.edu.ph', 'role' => 'Admin', 'status' => 'Active'],
-                            ['id' => 'USR-002', 'name' => 'Adrian Aseñas Guillermo', 'email' => 'aaguillermo@fit.edu.ph', 'role' => 'Client', 'status' => 'Active'],
-                            ['id' => 'USR-003', 'name' => 'Sophia Dela Cruz', 'email' => 'sdelacruz@fit.edu.ph', 'role' => 'Client', 'status' => 'Suspended'],
-                        ];
-                        ?>
+
+                    <tbody class="divide-y divide-[#FCE77C]">
 
                         <?php foreach ($accounts as $user): ?>
-                            <tr class="hover:bg-[#F9F7F4] transition">
-                                <td class="px-6 py-4 text-gray-800"><?php echo esc($user['id']); ?></td>
-                                <td class="px-6 py-4 font-semibold text-gray-900"><?php echo esc($user['name']); ?></td>
-                                <td class="px-6 py-4 text-gray-700"><?php echo esc($user['email']); ?></td>
+                            <tr class="hover:bg-[#FFF8E7] transition">
+                                <td class="px-6 py-4">USR-<?= esc($user->id) ?></td>
+
+                                <td class="px-6 py-4 font-semibold">
+                                    <?= esc(trim($user->first_name . ' ' . $user->middle_name . ' ' . $user->last_name)) ?>
+                                </td>
+
+                                <td class="px-6 py-4"><?= esc($user->email) ?></td>
+
                                 <td class="px-6 py-4 text-center">
                                     <span class="px-3 py-1 rounded-full text-sm font-semibold
-                                        <?php echo $user['role'] === 'Admin' ? 'bg-[#8B7E74] text-white' : 'bg-[#E5E0DC] text-gray-800'; ?>">
-                                        <?php echo esc($user['role']); ?>
+                                        <?= $user->type === 'admin'
+                                            ? 'bg-[#E15A37] text-white'
+                                            : 'bg-[#FCE77C] text-gray-800' ?>">
+                                        <?= ucfirst($user->type) ?>
                                     </span>
                                 </td>
+
                                 <td class="px-6 py-4 text-center">
                                     <span class="px-3 py-1 rounded-full text-sm font-semibold
-                                        <?php echo $user['status'] === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'; ?>">
-                                        <?php echo esc($user['status']); ?>
+                                        <?= $user->account_status == 1
+                                            ? 'bg-green-100 text-green-700'
+                                            : 'bg-red-100 text-red-700' ?>">
+                                        <?= $user->account_status == 1 ? 'Active' : 'Suspended' ?>
                                     </span>
                                 </td>
+
                                 <td class="px-6 py-4 text-center">
-                                    <a href="/admin/accounts/edit/<?php echo esc($user['id']); ?>" class="mx-2 font-semibold text-[#8B7E74] hover:text-[#A99D92]">✏️ Edit</a>
-                                    <a href="/admin/accounts/delete/<?php echo esc($user['id']); ?>" class="mx-2 font-semibold text-red-500 hover:text-red-600" onclick="return confirm('Are you sure you want to delete this account?')">🗑️ Delete</a>
+                                    <a href="#" onclick='openEditModal(<?= json_encode($user) ?>)'
+                                        class="mx-2 text-[#E15A37]">✏️ Edit</a>
+
+                                    <a href="#" onclick='openDeleteModal(<?= json_encode($user) ?>)'
+                                        class="mx-2 font-semibold text-red-500 hover:text-red-600">
+                                        🗑️ Delete
+                                    </a>
+
                                 </td>
+
                             </tr>
                         <?php endforeach; ?>
+
                     </tbody>
                 </table>
             </div>
 
-            <!-- Summary Cards -->
-            <section class="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-10">
-                <div class="bg-white shadow-md p-6 border border-[#E5E0DC] rounded-xl">
-                    <h3 class="mb-2 text-[#8B7E74] text-xl header-title">👥 Total Users</h3>
-                    <p class="font-bold text-gray-800 text-3xl">3</p>
-                </div>
-
-                <div class="bg-white shadow-md p-6 border border-[#E5E0DC] rounded-xl">
-                    <h3 class="mb-2 text-[#8B7E74] text-xl header-title">🧑‍💼 Admin Accounts</h3>
-                    <p class="font-bold text-gray-800 text-3xl">1</p>
-                </div>
-
-                <div class="bg-white shadow-md p-6 border border-[#E5E0DC] rounded-xl">
-                    <h3 class="mb-2 text-[#8B7E74] text-xl header-title">🧾 Client Accounts</h3>
-                    <p class="font-bold text-gray-800 text-3xl">2</p>
-                </div>
-            </section>
         </div>
+
     </main>
 
-    <!-- Footer -->
-    <?= view('components/footer') ?>
+
+    <!-- SIDEBAR -->
+    <aside class="flex flex-col w-64 sidebar">
+        <div class="p-6 border-[#FCE77C] border-b text-center">
+            <img src="/assets/fenecircle_logo.png" class="w-16 mx-auto mb-3">
+            <h2 class="text-white text-2xl header-title">Admin Panel</h2>
+        </div>
+
+        <nav class="flex-1 space-y-2 p-4">
+            <a href="/admin/adminDashboard" class="sidebar-link block px-4 py-3 rounded-lg">📊 Dashboard</a>
+            <a href="/admin/stockPage" class="sidebar-link block px-4 py-3 rounded-lg">📚 Stocks Page</a>
+            <a href="/admin/accountsPage" class="sidebar-link block bg-[#ED865A]/30 px-4 py-3 rounded-lg">👤 Accounts Page</a>
+            <a href="/admin/requestPage" class="sidebar-link block px-4 py-3 rounded-lg">📝 Requests Page</a>
+        </nav>
+
+        <!-- LOGOUT BUTTON EXACTLY LIKE DASHBOARD -->
+        <div class="p-4 border-[#FCE77C]/30 border-t">
+            <form action="/logout" method="post">
+                <?= csrf_field() ?>
+                <button type="submit"
+                    class="bg-[#FCE77C] hover:bg-[#ED865A] py-2 rounded-lg w-full font-semibold text-[#514D4D] text-center transition">
+                    Logout
+                </button>
+            </form>
+        </div>
+    </aside>
+
+
+    <!-- ADD USER MODAL -->
+    <dialog id="addAccountModal" class="p-0 rounded-2xl w-[95%] max-w-lg backdrop:bg-black/60">
+        <form method="post" action="/admin/accounts/create"
+            class="bg-white p-6 rounded-2xl border border-[#FCE77C] shadow-xl space-y-4">
+            <?= csrf_field() ?>
+
+            <h3 class="text-3xl font-bold text-[#E15A37] header-title mb-4">Add New Account</h3>
+
+            <div class="grid grid-cols-1 gap-3">
+                <input type="text" name="first_name" placeholder="First Name" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="text" name="middle_name" placeholder="Middle Name" class="border border-[#FCE77C] px-3 py-2 rounded-lg">
+                <input type="text" name="last_name" placeholder="Last Name" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="email" name="email" placeholder="Email" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="password" name="password" placeholder="Password" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="password" name="password_confirm" placeholder="Confirm Password" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+
+                <select name="type" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                    <option value="client">Client</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <input type="hidden" name="account_status" value="1">
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" onclick="closeAddModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                    Cancel
+                </button>
+                <button type="submit" class="px-6 py-2 bg-[#E15A37] text-white rounded-lg hover:bg-[#ED865A]">
+                    Create
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+
+    <!-- EDIT USER MODAL -->
+    <dialog id="editUserModal" class="p-0 rounded-2xl w-[95%] max-w-lg backdrop:bg-black/60">
+        <form method="post" id="editUserForm"
+            class="bg-white p-6 rounded-2xl border border-[#FCE77C] shadow-xl space-y-4">
+            <?= csrf_field() ?>
+
+            <h3 class="text-3xl font-bold text-[#E15A37] header-title mb-4">✏️ Edit User</h3>
+
+            <input type="hidden" name="id" id="edit_id">
+
+            <div class="grid grid-cols-1 gap-3">
+                <input type="text" id="edit_first_name" name="first_name" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="text" id="edit_middle_name" name="middle_name" class="border border-[#FCE77C] px-3 py-2 rounded-lg">
+                <input type="text" id="edit_last_name" name="last_name" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="email" id="edit_email" name="email" class="border border-[#FCE77C] px-3 py-2 rounded-lg" required>
+                <input type="password" id="edit_password" name="password" placeholder="New Password (optional)" class="border border-[#FCE77C] px-3 py-2 rounded-lg">
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
+                    Cancel
+                </button>
+                <button type="submit" class="px-6 py-2 bg-[#E15A37] text-white rounded-lg hover:bg-[#ED865A]">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- DELETE CONFIRM MODAL -->
+    <dialog id="deleteUserModal" class="p-0 rounded-2xl w-[90%] max-w-md backdrop:bg-black/60">
+
+        <form method="post" id="deleteUserForm" class="bg-white p-6 rounded-2xl border border-[#FCE77C] shadow-xl">
+            <?= csrf_field() ?>
+
+            <h3 class="text-2xl font-bold text-[#E15A37] header-title mb-4">⚠️ Delete User</h3>
+
+            <p class="text-gray-700 mb-6">
+                Are you sure you want to delete
+                <strong id="delete_user_name"></strong>?
+                This action cannot be undone.
+            </p>
+
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">
+                    Cancel
+                </button>
+
+                <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    Delete
+                </button>
+            </div>
+        </form>
+
+    </dialog>
+
+    <script>
+        function openAddModal() {
+            document.getElementById('addAccountModal').showModal();
+        }
+
+        function closeAddModal() {
+            document.getElementById('addAccountModal').close();
+        }
+
+        const editModal = document.getElementById('editUserModal');
+
+        function openEditModal(user) {
+            document.getElementById("edit_id").value = user.id;
+            document.getElementById("edit_first_name").value = user.first_name;
+            document.getElementById("edit_middle_name").value = user.middle_name;
+            document.getElementById("edit_last_name").value = user.last_name;
+            document.getElementById("edit_email").value = user.email;
+
+            document.getElementById("editUserForm").action = "/admin/accounts/update/" + user.id;
+
+            editModal.showModal();
+        }
+
+        function closeEditModal() {
+            editModal.close();
+        }
+
+        const deleteModal = document.getElementById("deleteUserModal");
+        const deleteForm = document.getElementById("deleteUserForm");
+
+        function openDeleteModal(user) {
+            document.getElementById("delete_user_name").textContent =
+                user.first_name + " " + user.last_name;
+
+            deleteForm.action = "/admin/accounts/delete/" + user.id;
+
+            deleteModal.showModal();
+        }
+
+        function closeDeleteModal() {
+            deleteModal.close();
+        }
+    </script>
+
 </body>
 
 </html>
