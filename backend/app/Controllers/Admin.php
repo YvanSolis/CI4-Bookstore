@@ -29,7 +29,7 @@ class Admin extends BaseController
     {
         $this->checkAdminAccess();
 
-        $usersModel = new UsersModel();
+        $usersModel  = new UsersModel();
         $stocksModel = new StocksModel();
 
         // Count all clients
@@ -39,24 +39,22 @@ class Admin extends BaseController
         $booksCount = $stocksModel->countAllResults();
 
         // Admin name
-        $session = session();
+        $session   = session();
         $firstName = $session->get('user')['first_name'] ?? 'Admin';
 
         return view('admin/adminDashboard', [
             'adminFirstName' => $firstName,
             'clientsCount'   => $clientsCount,
-            'booksCount'     => $booksCount,
-            // keep monthly sales unchanged
-            'monthlySales'   => $monthlySales ?? 0
+            'booksCount'     => $booksCount
+            // monthlySales removed
         ]);
     }
-
 
     public function stockPage()
     {
         $this->checkAdminAccess();
 
-        $session = session();
+        $session   = session();
         $firstName = $session->get('user')['first_name'] ?? 'Admin';
 
         $stocksModel = new StocksModel();
@@ -72,12 +70,10 @@ class Admin extends BaseController
     {
         $this->checkAdminAccess();
 
-        $session = session();
+        $session   = session();
         $firstName = $session->get('user')['first_name'] ?? 'Admin';
 
         $requestsModel = new RequestsModel();
-
-        // ⭐ SORT LOWEST → HIGHEST
         $requests = $requestsModel->orderBy('id', 'ASC')->findAll();
 
         return view('admin/requestPage', [
@@ -90,7 +86,7 @@ class Admin extends BaseController
     {
         $this->checkAdminAccess();
 
-        $session = session();
+        $session   = session();
         $firstName = $session->get('user')['first_name'] ?? 'Admin';
 
         $usersModel = new UsersModel();
@@ -129,7 +125,6 @@ class Admin extends BaseController
         return redirect()->to('/admin/accountsPage')->with('message', 'User updated.');
     }
 
-    // ⭐ UPDATE REQUEST STATUS
     public function updateRequestStatus($id)
     {
         $this->checkAdminAccess();
