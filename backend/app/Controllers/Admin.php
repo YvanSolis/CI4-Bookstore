@@ -30,16 +30,27 @@ class Admin extends BaseController
         $this->checkAdminAccess();
 
         $usersModel = new UsersModel();
+        $stocksModel = new StocksModel();
+
+        // Count all clients
         $clientsCount = $usersModel->where('type', 'client')->countAllResults();
 
+        // Count all books
+        $booksCount = $stocksModel->countAllResults();
+
+        // Admin name
         $session = session();
         $firstName = $session->get('user')['first_name'] ?? 'Admin';
 
         return view('admin/adminDashboard', [
-            'clientsCount' => $clientsCount,
             'adminFirstName' => $firstName,
+            'clientsCount'   => $clientsCount,
+            'booksCount'     => $booksCount,
+            // keep monthly sales unchanged
+            'monthlySales'   => $monthlySales ?? 0
         ]);
     }
+
 
     public function stockPage()
     {
