@@ -55,7 +55,6 @@
         <?= view('components/cards/dashboard_cards', [
             'totalBooks'      => $booksCount,
             'registeredUsers' => $clientsCount,
-            'monthlySales'    => $monthlySales ?? 0
         ]) ?>
 
     </main>
