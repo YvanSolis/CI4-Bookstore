@@ -20,9 +20,11 @@ class Stock extends BaseController
         $stocksModel = new StocksModel();
         $products = $stocksModel->findAll();
 
+        $userFirstName = $user['profile']['display_name'] ?? $user['first_name'] ?? 'Reader';
+
         return view('user/shopPage', [
             'products' => $products,
-            'userFirstName' => $user['first_name']
+            'userFirstName' => $userFirstName
         ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\ProfilesModel;
 use App\Models\UsersModel;
 
 class Auth extends BaseController
@@ -46,6 +47,9 @@ class Auth extends BaseController
 
         $type = strtolower($user->type ?? 'client');
 
+        // Load user profile (or default to name)
+        $profile = (new ProfilesModel())->where('user_id', $user->id)->first();
+
         // Set session user data
         $session->set('user', [
             'id' => $user->id,
@@ -53,6 +57,10 @@ class Auth extends BaseController
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'type' => $type,
+            'avatar_url' => $profile?->avatar_url ?? null,
+            'profile' => [
+                'display_name' => $profile?->display_name ?? ($user->first_name . ' ' . $user->last_name),
+            ],
         ]);
 
         // 🔥 Load this user's saved cart
@@ -116,10 +124,11 @@ class Auth extends BaseController
         $validation->setRule('email', 'Email', 'required|valid_email');
         $validation->setRule('password', 'Password', 'required|min_length[6]');
         $validation->setRule('password_confirm', 'Confirm Password', 'required|matches[password]');
+        $validation->setRule('avatar', 'Profile picture', 'uploaded[avatar]|is_image[avatar]|max_size[avatar,2048]|ext_in[avatar,png,jpg,jpeg]');
 
         $post = $request->getPost();
 
-        if (!$validation->run($post)) {
+        if (!$validation->withRequest($request)->run($post)) {
             $session->setFlashdata('errors', $validation->getErrors());
             $session->setFlashdata('old', $post);
             return redirect()->back()->withInput();
@@ -144,7 +153,36 @@ class Auth extends BaseController
 
         $userId = $userModel->insert($data);
 
+        if (!$userId) {
+            $session->setFlashdata('errors', ['general' => 'Something went wrong. Please try again.']);
+            $session->setFlashdata('old', $post);
+            return redirect()->back()->withInput();
+        }
+
+        // Store uploaded avatar and create a profile record.
+        $avatarUrl = null;
+        $avatar = $request->getFile('avatar');
+        if ($avatar && $avatar->isValid() && !$avatar->hasMoved()) {
+            $uploadPath = FCPATH . 'uploads/profiles/';
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            $newName = $avatar->getRandomName();
+            $avatar->move($uploadPath, $newName);
+            $avatarUrl = '/uploads/profiles/' . $newName;
+        }
+
+        // create a profile record so we can treat every user as having a profile
+        $profileModel = new ProfilesModel();
+        $profileModel->insert([
+            'user_id' => $userId,
+            'display_name' => trim($post['first_name'] . ' ' . $post['last_name']),
+            'avatar_url' => $avatarUrl,
+        ]);
+
         $newUser = $userModel->find($userId);
+        $newProfile = $profileModel->where('user_id', $userId)->first();
 
         $session->set('user', [
             'id' => $newUser->id,
@@ -152,6 +190,10 @@ class Auth extends BaseController
             'first_name' => $newUser->first_name,
             'last_name' => $newUser->last_name,
             'type' => $newUser->type,
+            'avatar_url' => $newProfile?->avatar_url ?? null,
+            'profile' => [
+                'display_name' => $newProfile?->display_name ?? ($newUser->first_name . ' ' . $newUser->last_name),
+            ],
         ]);
 
         $session->set('cart', []); // new user empty cart

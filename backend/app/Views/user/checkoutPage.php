@@ -6,8 +6,8 @@ if (!$session->has('user')) {
     return redirect()->to('/loginPage');
 }
 
-// Get user's first name
-$userFirstName = $session->get('user')['first_name'] ?? 'Reader';
+// Use the passed in name (preferred) or fall back to profile data.
+$userFirstName = $userFirstName ?? ($session->get('user')['profile']['display_name'] ?? $session->get('user')['first_name'] ?? 'Reader');
 
 // Get cart items
 $cart = $session->get('cart') ?? [];

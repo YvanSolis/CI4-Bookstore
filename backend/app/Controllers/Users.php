@@ -63,10 +63,13 @@ class Users extends BaseController
             $totalPrice += $item['price'] * $item['quantity'];
         }
 
+        $user = $session->get('user');
+        $userFirstName = $user['profile']['display_name'] ?? $user['first_name'] ?? 'Reader';
+
         return view('user/cartPage', [
             'cartItems' => $cartItems,
             'totalPrice' => $totalPrice,
-            'userFirstName' => $session->get('user')['first_name'] ?? 'Reader'
+            'userFirstName' => $userFirstName
         ]);
     }
 
@@ -82,11 +85,93 @@ class Users extends BaseController
             $totalPrice += $item['price'] * $item['quantity'];
         }
 
+        $user = $session->get('user');
+        $userFirstName = $user['profile']['display_name'] ?? $user['first_name'] ?? 'Reader';
+
         return view('user/checkoutPage', [
             'cartItems' => $cartItems,
             'totalPrice' => $totalPrice,
-            'userFirstName' => $session->get('user')['first_name'] ?? 'Reader'
+            'userFirstName' => $userFirstName
         ]);
+    }
+
+    public function profile()
+    {
+        $session = session();
+        if (!$session->has('user')) {
+            return redirect()->to('/loginPage');
+        }
+
+        return view('user/profilePage');
+    }
+
+    public function updateProfile()
+    {
+        $session = session();
+        if (!$session->has('user')) {
+            return redirect()->to('/loginPage');
+        }
+
+        $user = $session->get('user');
+        $userId = $user['id'];
+
+        $request = service('request');
+        $validation = \Config\Services::validation();
+
+        $validation->setRule('display_name', 'Display Name', 'required|min_length[2]|max_length[150]');
+        $validation->setRule('avatar', 'Profile picture', 'permit_empty|is_image[avatar]|max_size[avatar,2048]|ext_in[avatar,png,jpg,jpeg]');
+
+        $post = $request->getPost();
+
+        if (!$validation->withRequest($request)->run($post)) {
+            $session->setFlashdata('errors', $validation->getErrors());
+            return redirect()->back()->withInput();
+        }
+
+        $profileModel = new \App\Models\ProfilesModel();
+        $profile = $profileModel->where('user_id', $userId)->first();
+
+        $avatarUrl = $profile?->avatar_url;
+        $avatarFile = $request->getFile('avatar');
+
+        if ($avatarFile && $avatarFile->isValid() && !$avatarFile->hasMoved()) {
+            $uploadPath = FCPATH . 'uploads/profiles/';
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            // Remove previous avatar file if it exists
+            if (!empty($avatarUrl)) {
+                $existingFile = FCPATH . ltrim($avatarUrl, '/');
+                if (is_file($existingFile)) {
+                    @unlink($existingFile);
+                }
+            }
+
+            $newName = $avatarFile->getRandomName();
+            $avatarFile->move($uploadPath, $newName);
+            $avatarUrl = '/uploads/profiles/' . $newName;
+        }
+
+        $profileData = [
+            'display_name' => $post['display_name'],
+            'avatar_url' => $avatarUrl,
+        ];
+
+        if ($profile) {
+            $profileModel->update($profile->id, $profileData);
+        } else {
+            $profileData['user_id'] = $userId;
+            $profileModel->insert($profileData);
+        }
+
+        // Keep session in sync
+        $user['avatar_url'] = $avatarUrl;
+        $user['profile']['display_name'] = $post['display_name'];
+        $session->set('user', $user);
+
+        $session->setFlashdata('success', 'Profile updated successfully.');
+        return redirect()->to('/profile');
     }
 
     /**

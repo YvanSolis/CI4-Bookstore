@@ -95,7 +95,7 @@
                     </div>
 
                     <!-- SIGNUP FORM -->
-                    <form class="space-y-5" action="/signupPage" method="post" novalidate>
+                    <form class="space-y-5" action="/signupPage" method="post" enctype="multipart/form-data" novalidate>
                         <?= csrf_field() ?>
 
                         <!-- FIRST NAME -->
@@ -131,6 +131,16 @@
                                 class="px-4 py-4 border-2 <?= isset($errors['last_name']) ? 'border-red-500' : 'border-gray-300' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#fce77c]/60 focus:ring-4">
                             <?php if (!empty($errors['last_name'])): ?>
                                 <p class="mt-2 text-red-600 text-sm"><?= esc($errors['last_name']) ?></p>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- PROFILE PICTURE -->
+                        <div>
+                            <label class="block mb-2 font-semibold text-[#514d4d]">Profile picture</label>
+                            <input type="file" name="avatar" accept="image/*" required
+                                class="w-full text-gray-900 border-2 <?= isset($errors['avatar']) ? 'border-red-500' : 'border-gray-300' ?> rounded-xl p-3 focus:outline-none focus:ring-[#fce77c]/60 focus:ring-4">
+                            <?php if (!empty($errors['avatar'])): ?>
+                                <p class="mt-2 text-red-600 text-sm"><?= esc($errors['avatar']) ?></p>
                             <?php endif; ?>
                         </div>
 
