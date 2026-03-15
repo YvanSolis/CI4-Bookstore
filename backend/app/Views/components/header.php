@@ -29,12 +29,6 @@ $homeUrl = $user ? '/shop' : '/';
             <a href="<?= esc($homeUrl) ?>" class="bg-[#fce77c] hover:bg-[#ed865a] shadow-lg px-6 py-3 rounded-full text-[#514d4d] btn-main">
                 Home
             </a>
-            <a href="/moodboardPage" class="bg-[#fce77c] hover:bg-[#ed865a] shadow-lg px-6 py-3 rounded-full text-[#514d4d] btn-main">
-                Moodboard
-            </a>
-            <a href="/roadmapPage" class="bg-[#fce77c] hover:bg-[#ed865a] shadow-lg px-6 py-3 rounded-full text-[#514d4d] btn-main">
-                Roadmap
-            </a>
 
             <?php if ($user): ?>
                 <a href="/cart" class="relative flex items-center ml-4">
@@ -73,8 +67,6 @@ $homeUrl = $user ? '/shop' : '/';
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="hidden md:hidden bg-[#e15a37]">
         <a href="<?= esc($homeUrl) ?>" class="block hover:bg-[#fce77c]/20 px-6 py-3 text-white">Home</a>
-        <a href="/moodboardPage" class="block hover:bg-[#fce77c]/20 px-6 py-3 text-white">Moodboard</a>
-        <a href="/roadmapPage" class="block hover:bg-[#fce77c]/20 px-6 py-3 text-white">Roadmap</a>
         <?php if ($user): ?>
             <a href="/profile" class="block hover:bg-[#fce77c]/20 px-6 py-3 text-white">
                 Profile

@@ -46,6 +46,13 @@ class CreateUsersTable extends Migration
                 'default'    => 'client',
                 'null'       => false,
             ],
+            'account_status' => [
+                'type'       => 'TINYINT',
+                'constraint' => 1,
+                'default'    => 1,
+                'null'       => false,
+                'comment'    => '1=active, 0=disabled',
+            ],
             'deleted_at' => [
                 'type' => 'DATETIME',
                 'null' => true,
