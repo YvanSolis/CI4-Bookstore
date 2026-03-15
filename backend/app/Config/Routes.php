@@ -29,6 +29,10 @@ $routes->get('/cart/remove/(:num)', 'Cart::remove/$1');
 $routes->get('/profile', 'Users::profile');
 $routes->post('/profile', 'Users::updateProfile');
 
+// RATINGS
+$routes->get('/ratings', 'Users::ratings');
+$routes->post('/ratings', 'Users::submitRating');
+
 // CHECKOUT
 $routes->post('/checkout/placeOrder', 'Users::placeOrder');
 

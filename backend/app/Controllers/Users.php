@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\RatingsModel;
 use App\Models\StocksModel;
 
 class Users extends BaseController
@@ -172,6 +173,63 @@ class Users extends BaseController
 
         $session->setFlashdata('success', 'Profile updated successfully.');
         return redirect()->to('/profile');
+    }
+
+    public function ratings()
+    {
+        $session = session();
+        if (!$session->has('user')) {
+            return redirect()->to('/loginPage');
+        }
+
+        $userId = $session->get('user')['id'];
+        $ratingsModel = new RatingsModel();
+        $rating = $ratingsModel->where('user_id', $userId)->first();
+
+        return view('user/ratingsPage', [
+            'old' => ['existing_rating' => $rating?->rating] ?? [],
+        ]);
+    }
+
+    public function submitRating()
+    {
+        $session = session();
+        if (!$session->has('user')) {
+            return redirect()->to('/loginPage');
+        }
+
+        $request = service('request');
+        $validation = \Config\Services::validation();
+
+        $validation->setRule('rating', 'Rating', 'required|integer|greater_than_equal_to[1]|less_than_equal_to[5]');
+        $validation->setRule('comment', 'Comment', 'permit_empty|max_length[500]');
+
+        $post = $request->getPost();
+
+        if (!$validation->run($post)) {
+            $session->setFlashdata('rating_errors', $validation->getErrors());
+            $session->setFlashdata('rating_old', $post);
+            return redirect()->back()->withInput();
+        }
+
+        $userId = $session->get('user')['id'];
+        $ratingsModel = new RatingsModel();
+        $existing = $ratingsModel->where('user_id', $userId)->first();
+
+        $data = [
+            'user_id' => $userId,
+            'rating' => (int) $post['rating'],
+            'comment' => $post['comment'] ?? null,
+        ];
+
+        if ($existing) {
+            $ratingsModel->update($existing->id, $data);
+        } else {
+            $ratingsModel->insert($data);
+        }
+
+        $session->setFlashdata('rating_success', 'Thank you for your rating!');
+        return redirect()->to('/shop');
     }
 
     /**

@@ -37,7 +37,7 @@ $homeUrl = $user ? '/shop' : '/';
             </a>
 
             <?php if ($user): ?>
-                <a href="/cart" class="relative flex items-center">
+                <a href="/cart" class="relative flex items-center ml-4">
                     <img src="/assets/cart_icon.png" alt="Cart" class="w-10 h-10">
                     <?php if ($cartCount > 0): ?>
                         <span class="-top-2 -right-2 absolute flex justify-center items-center bg-red-500 rounded-full w-5 h-5 text-white text-xs">
