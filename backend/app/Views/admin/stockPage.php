@@ -66,7 +66,7 @@ $currentPath = $uri->getPath();
             <h1 class="text-3xl tracking-wide header-title">Stock Management</h1>
             <div class="flex items-center space-x-4">
                 <span class="font-semibold">
-                    Welcome, <?= esc($session->get('user')['first_name'] ?? 'Admin') ?>
+                    Welcome, <?= esc($session->get('user')['profile']['display_name'] ?? $session->get('user')['first_name'] ?? 'Admin') ?>
                 </span>
             </div>
         </header>

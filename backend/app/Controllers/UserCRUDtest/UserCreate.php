@@ -3,6 +3,7 @@
 namespace App\Controllers\UserCRUDtest;
 
 use App\Controllers\BaseController;
+use App\Models\ProfilesModel;
 use App\Models\UsersModel;
 
 class UserCreate extends BaseController
@@ -39,7 +40,15 @@ class UserCreate extends BaseController
         ];
 
         // Insert into DB
-        if ($model->insert($data)) {
+        $userId = $model->insert($data);
+        if ($userId) {
+            // Ensure profile record exists (without avatar)
+            $profileModel = new ProfilesModel();
+            $profileModel->insert([
+                'user_id' => $userId,
+                'display_name' => trim($data['first_name'] . ' ' . $data['last_name']),
+            ]);
+
             return redirect()->to('/admin/accountsPage')
                 ->with('message', 'User added successfully.');
         }

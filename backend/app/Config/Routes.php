@@ -25,6 +25,10 @@ $routes->post('/cart/add', 'Cart::add');
 $routes->post('/cart/updateQuantity/(:num)', 'Cart::updateQuantity/$1');
 $routes->get('/cart/remove/(:num)', 'Cart::remove/$1');
 
+// PROFILE
+$routes->get('/profile', 'Users::profile');
+$routes->post('/profile', 'Users::updateProfile');
+
 // CHECKOUT
 $routes->post('/checkout/placeOrder', 'Users::placeOrder');
 

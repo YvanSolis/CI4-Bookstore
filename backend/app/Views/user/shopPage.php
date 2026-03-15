@@ -5,7 +5,8 @@ if (!$session->has('user')) {
     return redirect()->to('/loginPage');
 }
 
-$userFirstName = $session->get('user')['first_name'] ?? 'Reader';
+// Use the passed in name (preferred) or fall back to profile data.
+$userFirstName = $userFirstName ?? ($session->get('user')['profile']['display_name'] ?? $session->get('user')['first_name'] ?? 'Reader');
 
 // Total *quantity* in cart (not total items)
 $cart = $session->get('cart') ?? [];
@@ -148,7 +149,7 @@ foreach ($cart as $c) {
                     <?= csrf_field() ?>
 
                     <input type="hidden" name="requester_name"
-                        value="<?= esc($session->get('user')['first_name'] . ' ' . $session->get('user')['last_name']) ?>">
+                        value="<?= esc($session->get('user')['profile']['display_name'] ?? ($session->get('user')['first_name'] . ' ' . $session->get('user')['last_name'])) ?>">
 
                     <textarea name="requested_data" placeholder="Enter the book or item you want added..."
                         class="mb-4 p-3 border border-[#E15A37] rounded-lg w-full"
