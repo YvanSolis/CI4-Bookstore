@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\RatingsModel;
 use App\Models\StocksModel;
 
 class Stock extends BaseController
@@ -22,9 +23,14 @@ class Stock extends BaseController
 
         $userFirstName = $user['profile']['display_name'] ?? $user['first_name'] ?? 'Reader';
 
+        // Load existing rating (if any)
+        $ratingsModel = new RatingsModel();
+        $existingRating = $ratingsModel->where('user_id', $user['id'])->first();
+
         return view('user/shopPage', [
             'products' => $products,
-            'userFirstName' => $userFirstName
+            'userFirstName' => $userFirstName,
+            'existingRating' => $existingRating,
         ]);
     }
 }

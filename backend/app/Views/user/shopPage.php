@@ -167,6 +167,57 @@ foreach ($cart as $c) {
 
             </div>
 
+            <!-- USER RATING -->
+            <div class="bg-white shadow-md mx-auto mb-16 p-8 border border-[#FCE77C] rounded-xl max-w-3xl">
+                <h3 class="mb-4 font-bold text-[#E15A37] text-2xl header-title">Rate Your Experience</h3>
+                <p class="mb-4 text-gray-700">Help us improve by giving a quick rating and optional comment.</p>
+
+                <?php if (session()->getFlashdata('rating_success')): ?>
+                    <p class="mb-4 p-3 bg-green-100 text-green-700 border border-green-300 rounded-lg">
+                        <?= session()->getFlashdata('rating_success') ?>
+                    </p>
+                <?php endif; ?>
+
+                <?php if (session()->getFlashdata('rating_errors')): ?>
+                    <div class="mb-6 rounded-lg bg-red-100 p-4 text-red-700">
+                        <ul class="list-disc pl-5">
+                            <?php foreach (session()->getFlashdata('rating_errors') as $error): ?>
+                                <li><?= esc($error) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+
+                <form action="/ratings" method="post" class="space-y-6">
+                    <?= csrf_field() ?>
+
+                    <?php
+                    $ratingOld = session()->getFlashdata('rating_old') ?? [];
+                    $currentRating = $ratingOld['rating'] ?? ($existingRating->rating ?? 0);
+                    ?>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-[#514d4d] mb-2">Rating</label>
+                        <select name="rating" class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#E15A37] focus:ring-[#fce77c]/60 focus:ring-4" required>
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <option value="<?= $i ?>" <?= $currentRating == $i ? 'selected' : '' ?>><?= $i ?></option>
+                            <?php endfor; ?>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-[#514d4d] mb-2">Comment (optional)</label>
+                        <textarea name="comment" rows="4"
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#E15A37] focus:ring-[#fce77c]/60 focus:ring-4"><?= esc($ratingOld['comment'] ?? ($existingRating->comment ?? '')) ?></textarea>
+                    </div>
+
+                    <button type="submit"
+                        class="bg-[#E15A37] hover:bg-[#ED865A] py-4 rounded-full w-full font-semibold text-white text-lg">
+                        Submit Rating
+                    </button>
+                </form>
+            </div>
+
             <!-- FOOTER -->
             <?= view('components/footer') ?>
 
